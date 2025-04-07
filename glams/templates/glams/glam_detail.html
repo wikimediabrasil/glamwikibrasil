@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load custom_tags %}
+
+{% block title %}{{ item.name_pt }}{% endblock %}
+{% block banner %}{% endblock %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item active">{{ item.name_pt }}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h1>{{ item.name_pt }}</h1>
+    <div class="w3-container flex-center">
+        <p class="field_title">{% trans "Name of the institution in Portuguese" %}</p>
+        <p class="field_value">{{ item.name_pt }}</p>
+        <p class="field_title">{% trans "Wikidata item" %}</p>
+        <p class="field_value">{{ item.wikidata }}</p>
+        <p class="field_title">{% trans "URL address" %}</p>
+        <p class="field_value"><a href="{{ item.website_url }}"
+                                  title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
+        <p class="field_title">{% trans "Institutions" %}</p>
+        <p class="field_value">{% for institution in item.institutions.all %}{{ institution }}<br>{% endfor %}</p>
+    </div>
+    <div class="flex-center button-container">
+        <a href="{% url 'glams:glam_update' pk=item.wikidata %}">
+            <button class="custom-button">{% trans "Update" %}</button>
+        </a>
+        <a href="{% url 'glams:glam_delete' pk=item.wikidata %}">
+            <button class="custom-red-button">{% trans "Delete" %}</button>
+        </a>
+    </div>
+    <div class="flex-center" style="margin-top:2em;">
+        <canvas id="myChart" width="1080" height="720"></canvas>
+        <form method="post" action="{% url 'medias:glam_report' pk=item.wikidata %}">
+            {% csrf_token %}
+            <label for="generate_report">{% trans "Generate report for specific month:" %}</label>
+            <select id="generate_report" name="timestamp">
+                <option value="">---------------</option>
+                {% for timestamp in timestamp_options %}
+                    <option value="{{ timestamp }}">{{ timestamp|timestamp2date|date:"F Y" }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="button custom-button submit-button" value="{% trans 'Generate report' %}">
+        </form>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+      const xAxis = "{% trans 'Date' %}";
+      const yAxis = "{% trans 'Monthly views' %}";
+      const y1Axis = "{% trans 'Cummulative views' %}";
+      const rawData = {{ chart_data|safe }};
+      const labels = rawData.map(item => {
+        const str = item.timestamp.toString();
+        return `${str.slice(0, 4)}-${str.slice(4, 6)}`;
+      });
+      const totals = rawData.map(item => item.total);
+      const cumulativeTotals = totals.reduce((acc, val, i) => {
+        acc.push(i === 0 ? val : acc[i - 1] + val);
+        return acc;
+      }, []);
+      const data = {
+        labels: labels,
+        datasets: [
+          {
+            label: y1Axis,
+            data: cumulativeTotals,
+            fill: false,
+            borderColor: '#EA5B0C',
+            backgroundColor: '#EA5B0C33',
+            tension: 0.4,
+            yAxisID: 'y1',
+          },
+          {
+            label: yAxis,
+            data: totals,
+            fill: true,
+            borderColor: '#0054b3',
+            backgroundColor: '#0054b333',
+            tension: 0.4,
+            yAxisID: 'y',
+          }
+        ]
+      };
+
+      const config = {
+        type: 'line',
+        data: data,
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: {display: true, text: xAxis}
+            },
+            y: {
+              type: 'linear',
+              beginAtZero: true,
+              title: {display: true, text: yAxis},
+              position: 'left',
+              display: true,
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {display: true, text: y1Axis},
+              grid: {
+                drawOnChartArea: false
+              }
+            }
+          }
+        }
+      };
+
+      new Chart(document.getElementById('myChart'), config);
+    </script>
+{% endblock %}

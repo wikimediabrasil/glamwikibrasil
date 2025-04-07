@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Update" %} - {{ form.instance.name_pt }}{% endblock %}
+{% block banner %}{% endblock %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_detail' form.instance.wikidata %}">{{ form.instance.name_pt }}</a></li>
+        <li class="breadcrumb-item active">{% trans "Update" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h1>{% trans "Update" %} {{ form.instance.name_pt }}</h1>
+    <div class="w3-container flex-center">
+        <form method="post">
+            {% csrf_token %}
+            <label class="field_title" for="id_name_pt">{% trans "Name of the GLAM-Wiki partnership in Portuguese" %}</label>
+            {{ form.name_pt }}
+            <label class="field_title" for="id_name_en">{% trans "Name of the GLAM-Wiki partnership in English" %}</label>
+            {{ form.name_en }}
+            <label class="field_title" for="id_acronym">{% trans "Shortname for this GLAM-Wiki partnership" %}</label>
+            {{ form.acronym }}
+            <label class="field_title" for="id_wikidata">{% trans "Wikidata item" %}</label>
+            {{ form.wikidata }}
+            <label class="field_title" for="id_website_url">{% trans "URL address for the main page" %}</label>
+            {{ form.website_url }}
+            <label class="field_title" for="id_category_url">{% trans "Wikimedia Commons general category URL address" %}</label>
+            {{ form.category_url }}
+            <label class="field_title" for="id_start_date">{% trans "Date of the start of this GLAM-Wiki partnership" %}</label>
+            {{ form.start_date }}
+            <label class="field_title" for="id_end_date">{% trans "Date of the end of this GLAM-Wiki partnership, if applicable" %}</label>
+            {{ form.end_date }}
+            <label class="field_title" for="id_institution">{% trans "Institution(s) of this GLAM-Wiki partnership" %}</label>
+            {{ form.institutions }}
+            <input type="submit" class="button custom-button submit-button" value="{% trans 'Update GLAM-Wiki partnership' %}">
+        </form>
+    </div>
+{% endblock %}

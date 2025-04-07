@@ -1,0 +1,18 @@
+/* FORM ELEMENTS */
+.user_form {
+    display: flex;
+    flex-direction: column;
+    gap:0.8em;
+    max-width: 600px;
+    margin-bottom: 0.8em;
+}
+
+.form_field {
+    display: flex;
+    flex-direction: column;
+    gap:0.2em;
+    width: 100%;
+}
+.field_title { font-weight: bold; }
+
+.form_helper { font-size: 0.8em; }

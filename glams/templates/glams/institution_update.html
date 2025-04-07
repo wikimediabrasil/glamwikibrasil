@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Update institution" %} - {{ form.instance.name_pt }}{% endblock %}
+{% block banner %}{% endblock %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:institution_list' %}">{% trans "Institutions" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:institution_detail' form.instance.wikidata %}">{{ form.instance.name_pt }}</a></li>
+        <li class="breadcrumb-item active">{% trans "Update" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h1>{% trans "Update" %} {{ form.instance.name_pt }}</h1>
+    <div class="w3-container flex-center">
+        <form method="post">
+            {% csrf_token %}
+            <label class="field_title" for="id_name_pt">{% trans "Name of the institution in Portuguese" %}</label>
+            {{ form.name_pt }}
+            <label class="field_title" for="id_name_en">{% trans "Name in English" %}</label>
+            {{ form.name_en }}
+            <label class="field_title" for="id_wikidata">{% trans "Wikidata item" %}</label>
+            {{ form.wikidata }}
+            <label class="field_title" for="id_website_url">{% trans "URL address" %}</label>
+            {{ form.website_url }}
+            <label class="field_title" for="id_location">{% trans "Location" %}</label>
+            {{ form.location }}
+            <input type="submit" class="button custom-button submit-button" value="{% trans 'Save' %}">
+        </form>
+    </div>
+{% endblock %}

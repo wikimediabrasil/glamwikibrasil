@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete" %} - {{ item.name_pt }}{% endblock %}
+{% block banner %}{% endblock %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_detail' pk=item.wikidata %}">{{ item.name_pt }}</a></li>
+        <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+
+    <h1>{{ item.name_pt }}</h1>
+    <div class="w3-container flex-center">
+        <h1>{% trans "Are you sure you want to delete this GLAM-Wiki partnership?" %}</h1>
+        <div>
+            <p class="field_title">{% trans "Institution(s) of this GLAM-Wiki partnership" %}</p>
+            <ul class="field_value">
+                {% for institution in item.institutions.all %}
+                    <li><a href="{% url 'glams:institution_detail' institution.wikidata %}">{{ institution.name_pt }}</a></li>
+                {% endfor %}
+            </ul>
+            <p class="field_title">{% trans "Name of the GLAM-Wiki partnership in Portuguese" %}</p>
+            <p class="field_value">{{ item.name_pt }}</p>
+            <p class="field_title">{% trans "Shortname for this GLAM-Wiki partnership" %}</p>
+            <p class="field_value">{{ item.acronym }}</p>
+            <p class="field_title">{% trans "Wikidata item" %}</p>
+            <p class="field_value">{{ item.wikidata }}</p>
+            <p class="field_title">{% trans "URL address for the main page" %}</p>
+            <p class="field_value"><a href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url }}</a></p>
+            <p class="field_title">{% trans "Wikimedia Commons general category URL address" %}</p>
+            <p class="field_value"><a href="{{ item.category_url }}" title="{% trans 'Website for the Commons category' %}">{{ item.category_url }}</a></p>
+            <p class="field_title">{% trans "Date of the start of this GLAM-Wiki partnership" %}</p>
+            <p class="field_value">{{ item.start_date }}</p>
+            <p class="field_title">{% trans "Date of the end of this GLAM-Wiki partnership, if applicable" %}</p>
+            <p class="field_value">{{ item.end_date }}</p>
+        </div>
+    </div>
+    <form id="delete_institution_form" class="flex-center button-container" method="post">{% csrf_token %}</form>
+    <div class="flex-center button-container">
+        <input type="submit" class="button custom-red-button" value="{% trans 'YES' %}" form="delete_institution_form">
+        <a href="{% url 'glams:glam_detail' pk=item.wikidata %}"><button class="button custom-grey-button">{% trans "NO" %}</button></a>
+    </div>
+{% endblock %}

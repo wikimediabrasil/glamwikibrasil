@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="/"/>
+    <label for="language_selector"><i class="nav_icon fa-solid fa-language"></i>
+        <span class="nav_btn_title">{% translate "Language" %}</span>
+    </label><br>
+    <select id="language_selector" class="language_selector" name="language" style="width: auto;" onchange="this.form.submit()">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% get_language_info_list for LANGUAGES as langs %}
+        {% for lang in langs %}
+            <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected="selected"{% endif %} data-content='{{ lang }}' >
+                {{ lang.code }}
+            </option>
+        {% endfor %}
+    </select>
+</form>

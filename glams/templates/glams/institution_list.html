@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Institutions" %}{% endblock %}
+{% block banner %}{% endblock %}
+{% block styles %}<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "Institutions" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h1 class="w3-row">{% trans "GLAM institutions" %}</h1>
+    <input type="text" id="search-input" onkeyup="searchFunction()" placeholder="{% trans 'Search for institutions..' %}" title="{% trans 'Type in an institution name' %}">
+    <div class="flex-container" id="institutions">
+        <a href="{% url 'glams:institution_create'%}" aria-label="{% trans 'Create a new institution' %}" class="flex-item" style="justify-content: center; text-align: center"><h2>{% trans 'Create a new institution' %}</h2></a>
+        {% for item in items|dictsort:"name_pt" %}
+            <div class="flex-item" data-name="{{ item.name_pt }}" style="justify-content: space-between; ">
+                <div style="display: flex; flex-direction: column; ">
+                    <h2><a href="{% url 'glams:institution_detail' pk=item.wikidata %}" aria-label="{% trans 'Details of the institution' %}">{{ item.name_pt }}</a></h2>
+                    <span>{{ item.wikidata }}</span>
+                    <span>{{ item.get_location_display }}</span>
+                    <ul>
+                        {% with glams=item.institution_glams.all %}
+                            {% if glams %}
+                                <li>Total GLAMs: {{ glams|length }}</li>
+                                {% for glam in glams %}
+                                    <li><i>{{ glam.name_pt }}</i></li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                    </ul>
+                </div>
+                <div style="display: flex; flex-direction: row; justify-content: space-between">
+                    <a href="{% url 'glams:institution_update' pk=item.wikidata %}">{% trans "Update institution" %}</a>
+                    <a href="{% url 'glams:institution_delete' pk=item.wikidata %}">{% trans "Delete institution" %}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+      function searchFunction() {
+        let input = document.getElementById("search-input").value.toUpperCase();
+        let items = document.getElementById("institutions");
+        let itemList = items.getElementsByClassName("flex-item");
+        for (let i = 0; i < itemList.length; i++) {
+          let textValue = itemList[i].getAttribute("data-name").toUpperCase()
+          if (textValue.indexOf(input) > -1) {
+            itemList[i].style.display = "";
+          } else {
+            itemList[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Homepage" %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">{% trans "Home" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h2>{% trans 'Welcome to the Wikimedia Brasil GLAM dashboard!' %}</h2>
+    <p>
+        {% blocktrans  %}This application is our central hub for managing, analyzing, and enhancing digital collections across <b>G</b>aleries, <b>L</b>ibraries, <b>A</b>rchives and <b>M</b>useums in Brazil. It was designed to support cultural institutions by providing data visualization for GLAM-Wiki partnerships with Wikimedia Brasil.{% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans  %}If you want help in digitize artifacts, artworks, and making your collections more accessible, please reach out to us!{% endblocktrans %}
+    </p>
+    <div class="gallery">
+    </div>
+    <div class="button-vertical-container">
+        <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}">
+            <button class="custom-button">
+                {% trans "Institutions" %}
+            </button>
+        </a>
+        <a href="{% url 'glams:glam_list' %}" aria-label="{% trans 'GLAM-Wiki Partnerships' %}">
+            <button class="custom-button">
+                {% trans "GLAMs" %}
+            </button>
+        </a>
+    </div>
+{% endblock %}

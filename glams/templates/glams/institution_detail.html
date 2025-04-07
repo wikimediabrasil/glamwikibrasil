@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ item.name_pt }}{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">{% endblock %}
+{% block banner %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:institution_list' %}">{% trans "Institutions" %}</a></li>
+        <li class="breadcrumb-item active truncate">{{ item }}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <h1 class="w3-row">{{ item }}</h1>
+    <div class="w3-container flex-center">
+        <p class="field_title">{% trans "Name of the institution in Portuguese" %}</p>
+        <p class="field_value">{{ item.name_pt }}</p>
+        <p class="field_title">{% trans "Wikidata item" %}</p>
+        <p class="field_value">{{ item.wikidata }}</p>
+        <p class="field_title">{% trans "URL address" %}</p>
+        <p class="field_value"><a href="{{ item.website_url }}"
+                                  title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
+        <p class="field_title">{% trans "Location" %}</p>
+        <p class="field_value">{{ item.get_location_display }}</p>
+    </div>
+    <div class="flex-center button-container">
+        <a href="{% url 'glams:institution_update' pk=item.wikidata %}">
+            <button class="custom-button">{% trans "Update institution" %}</button>
+        </a>
+        <a href="{% url 'glams:institution_delete' pk=item.wikidata %}">
+            <button class="custom-red-button">{% trans "Delete institution" %}</button>
+        </a>
+    </div>
+{% endblock %}

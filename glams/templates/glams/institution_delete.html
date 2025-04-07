@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete institution" %}{% endblock %}
+{% block banner %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:institution_list' %}">{% trans "Institutions" %}</a></li>
+        <li class="breadcrumb-item truncate"><a href="{% url 'glams:institution_detail' item.wikidata %}">{{ item }}</a>
+        </li>
+        <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+    </ol>
+{% endblock %}
+{% block content %}
+    <div class="w3-container flex-center">
+        <h1>{% trans "Are you sure you want to delete this institution?" %}</h1>
+        <div>
+            <p class="field_title">{% trans "Name of the institution in Portuguese" %}</p>
+            <p class="field_value">{{ item.name_pt }}</p>
+            <p class="field_title">{% trans "Wikidata item" %}</p>
+            <p class="field_value">{{ item.wikidata }}</p>
+            <p class="field_title">{% trans "URL address" %}</p>
+            <p class="field_value"><a href="{{ item.website_url }}"
+                                      title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
+            <p class="field_title">{% trans "Location" %}</p>
+            <p class="field_value">{{ item.get_location_display }}</p>
+        </div>
+    </div>
+    <form id="delete_institution_form" class="flex-center button-container" method="post">{% csrf_token %}</form>
+    <div class="flex-center button-container">
+        <input type="submit" class="button custom-red-button" value="{% trans 'YES' %}" form="delete_institution_form">
+        <a href="{% url 'glams:institution_detail' item.wikidata %}">
+            <button class="button custom-grey-button">{% trans "NO" %}</button>
+        </a>
+    </div>
+{% endblock %}

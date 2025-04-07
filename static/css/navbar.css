@@ -1,0 +1,37 @@
+/* NAVIGATION ELEMENTS */
+.nav_wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 7em;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 1em 0;
+    text-align: center;
+    background-color: var(--color-20);
+    color: var(--color-60);
+}
+.nav_separator {
+    border: 1px dashed var(--color-60);
+    width: 6em;
+    margin: 0.6em auto;
+    opacity: 0.25;
+}
+.nav_wrapper a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-60);
+    transition: all ease-in-out 250ms;
+    &:hover { color: var(--color-30); }
+}
+.nav_logo { width: 2.5em; height: 2.5em; margin-bottom: 1em; }
+.nav_section { display: flex; flex-direction: column; justify-content: space-around; }
+.nav_bottom { flex: 1; justify-content: flex-end; }
+.nav_icon { display: block; height: 1.5em; font-size: 1em; }
+
+@media screen and (max-width: 600px) {
+    .nav_wrapper { flex-basis: 3.5em; }
+    .nav_separator { width: 2em; }
+    .nav_title { display: none; }
+}

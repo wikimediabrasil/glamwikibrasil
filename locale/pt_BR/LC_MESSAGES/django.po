@@ -1,0 +1,678 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025 WIKIMEDIA BRASIL
+# This file is distributed under the same license as the GLAMWIKIBRASIL package.
+# ÉDER PORTO <EDER.PORTO@WMNOBRASIL.ORG>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: <eder.porto@wmnobrasil.org>\n"
+"POT-Creation-Date: 2025-04-07 17:11-0300\n"
+"PO-Revision-Date: 2025-04-07 17:11-0300\n"
+"Last-Translator: Éder Porto <eder.porto@wmnobrasil.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt-br\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\glams\models.py:8
+msgid "Acre"
+msgstr "Acre"
+
+#: .\glams\models.py:9
+msgid "Alagoas"
+msgstr "Alagoas"
+
+#: .\glams\models.py:10
+msgid "Amapá"
+msgstr "Amapá"
+
+#: .\glams\models.py:11
+msgid "Amazonas"
+msgstr "Amazonas"
+
+#: .\glams\models.py:12
+msgid "Bahia"
+msgstr "Bahia"
+
+#: .\glams\models.py:13
+msgid "Ceará"
+msgstr "Ceará"
+
+#: .\glams\models.py:14
+msgid "Distrito Federal"
+msgstr "Distrito Federal"
+
+#: .\glams\models.py:15
+msgid "Espírito Santo"
+msgstr "Espírito Santo"
+
+#: .\glams\models.py:16
+msgid "Goiás"
+msgstr "Goiás"
+
+#: .\glams\models.py:17
+msgid "Maranhão"
+msgstr "Maranhão"
+
+#: .\glams\models.py:18
+msgid "Mato Grosso"
+msgstr "Mato Grosso"
+
+#: .\glams\models.py:19
+msgid "Mato Grosso do Sul"
+msgstr "Mato Grosso do Sul"
+
+#: .\glams\models.py:20
+msgid "Minas Gerais"
+msgstr "Minas Gerais"
+
+#: .\glams\models.py:21
+msgid "Pará"
+msgstr "Pará"
+
+#: .\glams\models.py:22
+msgid "Paraíba"
+msgstr "Paraíba"
+
+#: .\glams\models.py:23
+msgid "Paraná"
+msgstr "Paraná"
+
+#: .\glams\models.py:24
+msgid "Pernambuco"
+msgstr "Pernambuco"
+
+#: .\glams\models.py:25
+msgid "Piauí"
+msgstr "Piauí"
+
+#: .\glams\models.py:26
+msgid "Rio de Janeiro"
+msgstr "Rio de Janeiro"
+
+#: .\glams\models.py:27
+msgid "Rio Grande do Norte"
+msgstr "Rio Grande do Norte"
+
+#: .\glams\models.py:28
+msgid "Rio Grande do Sul"
+msgstr "Rio Grande do Sul"
+
+#: .\glams\models.py:29
+msgid "Rondônia"
+msgstr "Rondônia"
+
+#: .\glams\models.py:30
+msgid "Roraima"
+msgstr "Roraima"
+
+#: .\glams\models.py:31
+msgid "Santa Catarina"
+msgstr "Santa Catarina"
+
+#: .\glams\models.py:32
+msgid "São Paulo"
+msgstr "São Paulo"
+
+#: .\glams\models.py:33
+msgid "Sergipe"
+msgstr "Sergipe"
+
+#: .\glams\models.py:34
+msgid "Tocantins"
+msgstr "Tocantins"
+
+#: .\glams\models.py:35
+msgid "Brazil"
+msgstr "Brasil"
+
+#: .\glams\models.py:36
+msgid "International"
+msgstr "Internacional"
+
+#: .\glams\models.py:39 .\glams\models.py:63
+msgid "Name in Portuguese"
+msgstr "Nome em português"
+
+#: .\glams\models.py:40 .\glams\models.py:64
+#: .\glams\templates\glams\institution_create.html:23
+#: .\glams\templates\glams\institution_update.html:24
+msgid "Name in English"
+msgstr "Nome em inglês"
+
+#: .\glams\models.py:42
+msgid "Wikidata item for the institution"
+msgstr "Item do Wikidata para a instituição"
+
+#: .\glams\models.py:49 .\glams\models.py:74
+msgid "Wikidata items must be in the format 'Q123'."
+msgstr "Itens do Wikidata devem estar no formato 'Q123'."
+
+#: .\glams\models.py:53
+msgid "Website of the institution"
+msgstr "Website para a instituição"
+
+#: .\glams\models.py:54
+msgid "Location of the institution"
+msgstr "Localização da instituição"
+
+#: .\glams\models.py:65
+msgid "Acronym"
+msgstr "Sigla"
+
+#: .\glams\models.py:67
+msgid "Wikidata item for the partnership"
+msgstr "Item Wikidata para a parceria"
+
+#: .\glams\models.py:78
+msgid "GLAM page on Wikipedia"
+msgstr "Página GLAM na Wikipédia"
+
+#: .\glams\models.py:79
+msgid "GLAM category on Commons"
+msgstr "Categoria GLAM no Commons"
+
+#: .\glams\models.py:80
+msgid "Start date for the partnership"
+msgstr "Data de início da parceria"
+
+#: .\glams\models.py:81
+msgid "End date for the partnership"
+msgstr "Data de fim da parceria"
+
+#: .\glams\models.py:82
+msgid "Institutions of this GLAM"
+msgstr "Instituições parte deste GLAM"
+
+#: .\glams\templates\glams\glam_create.html:6
+#: .\glams\templates\glams\institution_create.html:6
+#: .\glams\templates\glams\institution_create.html:31
+msgid "Create institution"
+msgstr "Criar instituição"
+
+#: .\glams\templates\glams\glam_create.html:11
+#: .\glams\templates\glams\glam_delete.html:11
+#: .\glams\templates\glams\glam_detail.html:12
+#: .\glams\templates\glams\glam_list.html:11
+#: .\glams\templates\glams\glam_update.html:11
+#: .\glams\templates\glams\index.html:9
+#: .\glams\templates\glams\institution_create.html:11
+#: .\glams\templates\glams\institution_delete.html:10
+#: .\glams\templates\glams\institution_detail.html:12
+#: .\glams\templates\glams\institution_list.html:11
+#: .\glams\templates\glams\institution_update.html:11
+msgid "Home"
+msgstr "Início"
+
+#: .\glams\templates\glams\glam_create.html:12
+#: .\glams\templates\glams\glam_delete.html:12
+#: .\glams\templates\glams\glam_detail.html:13
+#: .\glams\templates\glams\glam_list.html:12
+#: .\glams\templates\glams\glam_list.html:16
+#: .\glams\templates\glams\glam_update.html:12 .\templates\navbar.html:13
+#: .\templates\navbar.html:15
+msgid "GLAM-Wiki partnerships"
+msgstr "Parcerias GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_create.html:13
+msgid "Create"
+msgstr "Criar"
+
+#: .\glams\templates\glams\glam_create.html:17
+msgid "Create a new GLAM-Wiki"
+msgstr "Criar uma nova parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_create.html:21
+#: .\glams\templates\glams\glam_delete.html:23
+#: .\glams\templates\glams\glam_update.html:38
+msgid "Institution(s) of this GLAM-Wiki partnership"
+msgstr "Instituição(ões) desta parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_create.html:23
+#: .\glams\templates\glams\glam_delete.html:29
+#: .\glams\templates\glams\glam_update.html:22
+msgid "Name of the GLAM-Wiki partnership in Portuguese"
+msgstr "Nome da parceria GLAM-Wiki em português"
+
+#: .\glams\templates\glams\glam_create.html:25
+#: .\glams\templates\glams\glam_update.html:24
+msgid "Name of the GLAM-Wiki partnership in English"
+msgstr "Nome da parceria GLAM-Wiki em inglês"
+
+#: .\glams\templates\glams\glam_create.html:27
+#: .\glams\templates\glams\glam_delete.html:31
+#: .\glams\templates\glams\glam_update.html:26
+msgid "Shortname for this GLAM-Wiki partnership"
+msgstr "Sigla da parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_create.html:29
+#: .\glams\templates\glams\glam_delete.html:33
+#: .\glams\templates\glams\glam_detail.html:22
+#: .\glams\templates\glams\glam_update.html:28
+#: .\glams\templates\glams\institution_create.html:25
+#: .\glams\templates\glams\institution_delete.html:23
+#: .\glams\templates\glams\institution_detail.html:22
+#: .\glams\templates\glams\institution_update.html:26
+msgid "Wikidata item"
+msgstr "Item do Wikidata"
+
+#: .\glams\templates\glams\glam_create.html:31
+#: .\glams\templates\glams\glam_delete.html:35
+#: .\glams\templates\glams\glam_update.html:30
+msgid "URL address for the main page"
+msgstr "Endereço de URL para a página principal"
+
+#: .\glams\templates\glams\glam_create.html:33
+#: .\glams\templates\glams\glam_delete.html:37
+#: .\glams\templates\glams\glam_update.html:32
+msgid "Wikimedia Commons general category URL address"
+msgstr "Endereço de URL para a categoria geral do Commons"
+
+#: .\glams\templates\glams\glam_create.html:35
+#: .\glams\templates\glams\glam_delete.html:39
+#: .\glams\templates\glams\glam_update.html:34
+msgid "Date of the start of this GLAM-Wiki partnership"
+msgstr "Data de início desta parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_create.html:37
+#: .\glams\templates\glams\glam_delete.html:41
+#: .\glams\templates\glams\glam_update.html:36
+msgid "Date of the end of this GLAM-Wiki partnership, if applicable"
+msgstr "Data de fim desta parceria GLAM-Wiki, se aplicável"
+
+#: .\glams\templates\glams\glam_create.html:39
+msgid "Create GLAM-Wiki partnership"
+msgstr "Criar parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_delete.html:6
+#: .\glams\templates\glams\glam_delete.html:14
+#: .\glams\templates\glams\glam_detail.html:35
+#: .\glams\templates\glams\glam_list.html:37
+#: .\glams\templates\glams\institution_delete.html:14
+msgid "Delete"
+msgstr "Excluir"
+
+#: .\glams\templates\glams\glam_delete.html:21
+msgid "Are you sure you want to delete this GLAM-Wiki partnership?"
+msgstr "Tem certeza que você quer deletar esta parceria GLAM-Wiki?"
+
+#: .\glams\templates\glams\glam_delete.html:36
+msgid "Website for the GLAM-Wiki partnership"
+msgstr "Endereço de URL para esta parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_delete.html:38
+msgid "Website for the Commons category"
+msgstr "Endereço de URL para a categoria Commons"
+
+#: .\glams\templates\glams\glam_delete.html:47
+#: .\glams\templates\glams\institution_delete.html:34
+msgid "YES"
+msgstr "SIM"
+
+#: .\glams\templates\glams\glam_delete.html:48
+#: .\glams\templates\glams\institution_delete.html:36
+msgid "NO"
+msgstr "NÃO"
+
+#: .\glams\templates\glams\glam_detail.html:20
+#: .\glams\templates\glams\institution_create.html:21
+#: .\glams\templates\glams\institution_delete.html:21
+#: .\glams\templates\glams\institution_detail.html:20
+#: .\glams\templates\glams\institution_update.html:22
+msgid "Name of the institution in Portuguese"
+msgstr "Nome da instituição em português"
+
+#: .\glams\templates\glams\glam_detail.html:24
+#: .\glams\templates\glams\institution_create.html:27
+#: .\glams\templates\glams\institution_delete.html:25
+#: .\glams\templates\glams\institution_detail.html:24
+#: .\glams\templates\glams\institution_update.html:28
+msgid "URL address"
+msgstr "Endereço de URL"
+
+#: .\glams\templates\glams\glam_detail.html:26
+#: .\glams\templates\glams\institution_delete.html:27
+#: .\glams\templates\glams\institution_detail.html:26
+msgid "Website for the institution"
+msgstr "Website da instituição"
+
+#: .\glams\templates\glams\glam_detail.html:27
+#: .\glams\templates\glams\index.html:23 .\glams\templates\glams\index.html:25
+#: .\glams\templates\glams\institution_create.html:12
+#: .\glams\templates\glams\institution_delete.html:11
+#: .\glams\templates\glams\institution_detail.html:13
+#: .\glams\templates\glams\institution_list.html:6
+#: .\glams\templates\glams\institution_list.html:12
+#: .\glams\templates\glams\institution_update.html:12
+#: .\templates\navbar.html:20 .\templates\navbar.html:22
+msgid "Institutions"
+msgstr "Instituições"
+
+#: .\glams\templates\glams\glam_detail.html:32
+#: .\glams\templates\glams\glam_list.html:36
+#: .\glams\templates\glams\glam_update.html:6
+#: .\glams\templates\glams\glam_update.html:14
+#: .\glams\templates\glams\glam_update.html:18
+#: .\glams\templates\glams\institution_update.html:14
+#: .\glams\templates\glams\institution_update.html:18
+msgid "Update"
+msgstr "Editar"
+
+#: .\glams\templates\glams\glam_detail.html:42
+msgid "Generate report for specific month:"
+msgstr "Gerar relatório para mês específico:"
+
+#: .\glams\templates\glams\glam_detail.html:49
+msgid "Generate report"
+msgstr "Gerar relatório"
+
+#: .\glams\templates\glams\glam_detail.html:55
+msgid "Date"
+msgstr "Data"
+
+#: .\glams\templates\glams\glam_detail.html:56
+msgid "Monthly views"
+msgstr "Visualizações mensais"
+
+#: .\glams\templates\glams\glam_detail.html:57
+msgid "Cummulative views"
+msgstr "Visualizações acumuladas"
+
+#: .\glams\templates\glams\glam_list.html:6
+msgid "List of GLAM-Wiki partnerships"
+msgstr "Lista de parcerias GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:17
+msgid "Search for GLAM-Wiki partnerships.."
+msgstr "Procure por uma parceria GLAM-Wiki..."
+
+#: .\glams\templates\glams\glam_list.html:17
+msgid "Type in an GLAM-Wiki partnership name"
+msgstr "Digite o nome de uma parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:19
+msgid "Create a new GLAM-Wiki partnership"
+msgstr "Criar uma parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:23
+msgid "Details of the GLAM-Wiki partnership"
+msgstr "Detalhes da parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:26
+msgid "Website URL of this GLAM-Wiki partnership"
+msgstr "Website para esta parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:26
+msgid "Wiki homepage"
+msgstr "Página inicial na Wiki"
+
+#: .\glams\templates\glams\glam_list.html:27
+msgid "Wikimedia Commons category URL of this GLAM-Wiki partnership"
+msgstr "URL da categoria no Commons desta parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\glam_list.html:27
+msgid "Wikimedia Commons category"
+msgstr "Categoria no Commons"
+
+#: .\glams\templates\glams\glam_update.html:40
+msgid "Update GLAM-Wiki partnership"
+msgstr "Editar parceria GLAM-Wiki"
+
+#: .\glams\templates\glams\index.html:6 .\templates\navbar.html:7
+msgid "Homepage"
+msgstr "Página inicial"
+
+#: .\glams\templates\glams\index.html:13
+msgid "Welcome to the Wikimedia Brasil GLAM dashboard!"
+msgstr "Bem-vindo(a) ao painel GLAM da Wikimedia Brasil!"
+
+#: .\glams\templates\glams\index.html:15
+msgid ""
+"This application is our central hub for managing, analyzing, and enhancing "
+"digital collections across <b>G</b>aleries, <b>L</b>ibraries, <b>A</"
+"b>rchives and <b>M</b>useums in Brazil. It was designed to support cultural "
+"institutions by providing data visualization for GLAM-Wiki partnerships with "
+"Wikimedia Brasil."
+msgstr ""
+"Esta aplicação é a nossa tentativa para um hub central para gerenciar e "
+"analisar coleções digitais entre <b>G</b>alerias, Bib<b>L</b>iotecas, <b>A</"
+"b>rquivos e <b>M</b>useus no Brasil. Foi desenhada para dar suporte à "
+"instituições culturais em visualização de dados de parcerias GLAM-Wiki com a "
+"Wikimedia Brasil."
+
+#: .\glams\templates\glams\index.html:18
+msgid "If you want help in digitize artifacts, artworks, and making your collections "
+"more accessible, please reach out to us!"
+msgstr "Se você precisa de ajuda em digitalização de objetos, obras de arte e fazer "
+"suas coleções mais acessíveis, por favor nos envie uma mensagem!"
+
+#: .\glams\templates\glams\index.html:28
+msgid "GLAM-Wiki Partnerships"
+msgstr "Parceiras GLAM-Wiki"
+
+#: .\glams\templates\glams\index.html:30
+msgid "GLAMs"
+msgstr "GLAMs"
+
+#: .\glams\templates\glams\institution_create.html:13
+#: .\glams\templates\glams\institution_create.html:17
+#: .\glams\templates\glams\institution_list.html:19
+msgid "Create a new institution"
+msgstr "Criar uma nova instituição"
+
+#: .\glams\templates\glams\institution_create.html:29
+#: .\glams\templates\glams\institution_delete.html:28
+#: .\glams\templates\glams\institution_detail.html:27
+#: .\glams\templates\glams\institution_update.html:30
+msgid "Location"
+msgstr "Localização"
+
+#: .\glams\templates\glams\institution_delete.html:6
+#: .\glams\templates\glams\institution_detail.html:35
+#: .\glams\templates\glams\institution_list.html:39
+msgid "Delete institution"
+msgstr "Excluir instituição"
+
+#: .\glams\templates\glams\institution_delete.html:19
+msgid "Are you sure you want to delete this institution?"
+msgstr "Você tem certeza que quer excluír esta instituição?"
+
+#: .\glams\templates\glams\institution_detail.html:32
+#: .\glams\templates\glams\institution_list.html:38
+#: .\glams\templates\glams\institution_update.html:6
+msgid "Update institution"
+msgstr "Editar instituição"
+
+#: .\glams\templates\glams\institution_list.html:16
+msgid "GLAM institutions"
+msgstr "Instituições GLAM"
+
+#: .\glams\templates\glams\institution_list.html:17
+msgid "Search for institutions.."
+msgstr "Procurar por instituições"
+
+#: .\glams\templates\glams\institution_list.html:17
+msgid "Type in an institution name"
+msgstr "Digite o nome de uma instituição"
+
+#: .\glams\templates\glams\institution_list.html:23
+msgid "Details of the institution"
+msgstr "Detalhes da instituição"
+
+#: .\glams\templates\glams\institution_update.html:32
+msgid "Save"
+msgstr "Salvar"
+
+#: .\glamwikibrasil\settings.py:93
+msgid "English"
+msgstr "Inglês"
+
+#: .\glamwikibrasil\settings.py:94
+msgid "Brazilian Portuguese"
+msgstr "Português brasileiro"
+
+#: .\medias\models.py:23
+msgid "All referers"
+msgstr "Todos os referenciadores"
+
+#: .\medias\models.py:24
+msgid "Internal"
+msgstr "Internos"
+
+#: .\medias\models.py:25
+msgid "External"
+msgstr "Externos"
+
+#: .\medias\models.py:26
+msgid "Search-engine"
+msgstr "Buscadores"
+
+#: .\medias\models.py:27
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: .\medias\models.py:28
+msgid "None"
+msgstr "Nenhum"
+
+#: .\medias\models.py:31
+msgid "All agents"
+msgstr "Todos os agentes"
+
+#: .\medias\models.py:32
+msgid "Users"
+msgstr "Usuários"
+
+#: .\medias\models.py:33
+msgid "Spiders"
+msgstr "Rastreadores"
+
+#: .\medias\models.py:36
+msgid "Daily"
+msgstr "Diário"
+
+#: .\medias\models.py:37
+msgid "Monthly"
+msgstr "Mensal"
+
+#: .\medias\templates\medias\report.html:49
+msgid "Logo"
+msgstr "Logo"
+
+#: .\medias\templates\medias\report.html:58
+msgid "Total number of files"
+msgstr "Número total de arquivos"
+
+#: .\medias\templates\medias\report.html:60
+msgid "This figure shows the total media files uploaded to the main category of "
+"this institution in Wikimedia Commons, by the end of the selected month."
+msgstr "Este número mostra o total de arquivos de mídia enviados para a categoria "
+"principal desta parceria no Wikimedia Commons, até o final do mês selecionado."
+
+#: .\medias\templates\medias\report.html:63
+msgid "Total views for month"
+msgstr "Total de visualizações no mês"
+
+#: .\medias\templates\medias\report.html:65
+msgid "This figure shows the sum of all views throughout the chosen month, "
+"for this institution's main category on Wikimedia Commons."
+msgstr "Este número mostra a soma de todas as visualizações ao longo do mês "
+"escolhido, para a categoria principal desta parceria no Wikimedia Commons."
+
+#: .\medias\templates\medias\report.html:70
+msgid "Average daily views"
+msgstr "Média de visualizações diárias"
+
+#: .\medias\templates\medias\report.html:72
+msgid "This figure shows the average views per day for this month."
+msgstr "Este número mostra a média de visualizações por dia neste mês."
+
+#: .\medias\templates\medias\report.html:75
+msgid "Average monthly views"
+msgstr "Média de visualizações mensais"
+
+#: .\medias\templates\medias\report.html:77
+msgid "This figure shows the average views per month for this year, up until this month."
+msgstr "Este número mostra a média de visualizações por mês neste ano, até este mês, inclusive."
+
+#: .\medias\templates\medias\report.html:82
+msgid "Number of articles"
+msgstr "Número de páginas Wiki"
+
+#: .\medias\templates\medias\report.html:84
+msgid "This figure shows how many Wiki pages use files from this GLAM-Wiki partnership."
+msgstr "Este número mostra quantas páginas Wiki usam arquivos desta parceria GLAM-Wiki."
+
+#: .\medias\templates\medias\report.html:87
+msgid "Number of projects"
+msgstr "Número de projetos"
+
+#: .\medias\templates\medias\report.html:89
+msgid "This figure shows how many distinct Wikimedia projects use files "
+"from this GLAM-Wiki partnership."
+msgstr "Este número mostra quantos projetos distintos da Wikimedia usam "
+"arquivos desta parceria GLAM-Wiki."
+
+#: .\medias\templates\medias\report.html:93
+msgid "Most viewed medias of this month"
+msgstr "Arquivos de mídia mais vistos este mês"
+
+#: .\medias\templates\medias\report.html:98
+#, python-format
+msgid "%(counter)sº - %(name)s"
+msgstr "%(counter)sº - %(name)s"
+
+#: .\medias\templates\medias\report.html:100
+#, python-format
+msgid "<span class=\"pd05 fwbold fts2 fcblue\">%(views)s</span> views this month"
+msgstr "<span class=\"pd05 fwbold fts2 fcblue\">%(views)s</span> visualizações este mês"
+
+#: .\medias\templates\medias\report.html:101
+#, python-format
+msgid "<span class=\"pd05 fwbold fts2 fcblue\">%(avg)s</span> per day in average"
+msgstr "<span class=\"pd05 fwbold fts2 fcblue\">%(avg)s</span> por dia, em média"
+
+#: .\medias\templates\medias\report.html:102
+#, python-format
+msgid "Uploaded at %(date)s"
+msgstr "Enviada em %(date)s"
+
+#: .\medias\templates\medias\report.html:109
+msgid ""
+"All data is based on the files of this GLAM-Wiki partnership available at "
+"Wikimedia Commons. The data shows a monthly up-to-date snapshot of the usage "
+"and views of the files during the selected month, through a variety of "
+"metrics.<br><b>Sources:</b> The <a href=\"https://www.mediawiki.org/wiki/API:"
+"Main_page\" title=\"MediaWiki API\">MediaWiki API</a> and the <a "
+"href=\"https://api.wikimedia.org/wiki/Core_REST_API\" title=\"Core REST "
+"API\">Core REST API</a>.<br><b>Contact:</b> <a href=\"mailto:glam@wmnobrasil."
+"org\" title=\"GLAM and Culture email\">glam@wmnobrasil.org</a>"
+msgstr ""
+"Todos os dados são baseados nos arquivos desta parceria GLAM-Wiki disponíveis no "
+"Wikimedia Commons. Os dados mostram um retrato mensal atualizado do uso e das "
+"visualizações dos arquivos durante o mês selecionado, por meio de uma variedade de "
+"métricas.<br><b>Fontes:</b> A <a href=\"https://www.mediawiki.org/wiki/API:"
+"Main_page\" title=\"API do MediaWiki\">API do MediaWiki</a> e a <a "
+"href=\"https://api.wikimedia.org/wiki/Core_REST_API\" title=\"Core REST "
+"API\">Core REST API</a>.<br><b>Contato:</b> <a href=\"mailto:glam@wmnobrasil."
+"org\" title=\"Email de GLAMs e Cultura\">glam@wmnobrasil.org</a>"
+
+#: .\templates\base.html:29 .\templates\navbar.html:8
+msgid "Logo for the project"
+msgstr "Logo do projeto"
+
+#: .\templates\base.html:30
+msgid "GLAM Wiki Brasil"
+msgstr "GLAM Wiki Brasil"
+
+#: .\templates\base.html:35
+msgid "This app was developed by Wikimedia Brasil."
+msgstr "Este aplicativo foi desenvolvido pela Wikimedia Brasil"
+
+#: .\templates\i18n.html:7
+msgid "Language"
+msgstr "Língua"

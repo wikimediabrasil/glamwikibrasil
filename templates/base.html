@@ -1,0 +1,40 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} | GLAMWikiBrasil</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>
+    <link rel="preconnect" href="https://tools-static.wmflabs.org/">
+    <link rel="stylesheet" type="text/css" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/w3-css/4.1.0/3/w3.css">
+    <link rel="stylesheet" type="text/css" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    {% block styles %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    {% block navbar %}{% include 'navbar.html' %}{% endblock %}
+    <div class="content-container">
+        <main class="table-container">
+            {% block breadcrumbs %}{% endblock %}
+            {% block banner %}
+                <h1 class="w3-row logo">
+                    <img class="disappear" src="{% static 'images/logo.svg' %}" alt="{% trans "Logo for the project" %}" width="3em">
+                    <span>{% trans "GLAM Wiki Brasil" %}</span>
+                </h1>
+            {% endblock %}
+            {% block content %}{% endblock %}
+        </main>
+        <footer>{% block footer %}{% trans "This app was developed by Wikimedia Brasil." %}{% endblock %}</footer>
+    </div>
+    {% block scripts %}{% endblock %}
+</div>
+</body>
+</html>

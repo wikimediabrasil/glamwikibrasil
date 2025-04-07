@@ -1,0 +1,199 @@
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+
+<!DOCTYPE HTML>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if pdf_title %}{{ pdf_title }}{% else %}PDF{% endif %}</title>
+    <style type="text/css">
+        @page {
+            size: A4 portrait;
+            margin: 0;
+            @frame header_frame {
+                -pdf-frame-content: header_content;
+                -pdf-frame-border: 1
+            }
+            @frame content_frame {
+                left: 0;
+                top: 7.7cm;
+            }
+        }
+
+        body {
+            font-weight: 200;
+            font-size: 14px;
+            font-family: "Montserrat", sans-serif;
+            line-height: 1.5;
+        }
+
+        h1 {
+            color: #007cae;
+        }
+
+        a {
+            color: #007cae;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            overflow-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+{#<div style="background-color: #345FAA; padding-top: 4cm; padding-left: 3cm; padding-bottom: 1cm" >#}
+{#    <div style="display: inline-block;"><img src="..\static\images\icone.png" style="width: 4cm; height: auto; display: inline-block;"></div>#}
+{#    <div style="display: inline-block; padding-left: 1cm; text-align: right">y Awesome Title</div>#}
+{#</div>#}
+<div>
+    <table id="header_content" style="padding: 1.5cm 1cm 0 1.5cm; background-color:#345FAA;">
+        <tr>
+            <td style="padding:2cm 0 0.5cm 1.5cm; vertical-align: middle;">
+                <img src="static/images/icone.png" style="width: 4cm; height: auto;">
+            </td>
+            <td style="padding-left: 0; text-align: center; vertical-align: middle;">
+                <span style="color: white; font-size: 2em; font-weight: bolder">{{ glam.name_pt }}</span>
+                <br><br>
+                {% localize on %}
+                    <span style="color: white; font-size: 2em; font-weight: bolder">{{ timestamp|date:"F/Y" }}</span>
+                {% endlocalize %}
+            </td>
+        </tr>
+    </table>
+    <table style="padding: 0 1cm 0 1.5cm; background-color: #F1F1F1; margin-bottom: 1cm">
+        <tr>
+            <td style="text-align:center; padding:1cm 0.5cm 1cm 3cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Total number of files</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ files }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows the total media files uploaded to the main category of this institution in Wikimedia Commons, by the end of the selected month.</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="text-align:center; padding:1cm 2cm 1cm 0.5cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Total views for month</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ views|localize }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows the sum of all views throughout the chosen month, for this institution's main category on Wikimedia Commons.</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table style="padding: 0 1cm 0 1.5cm; background-color: #FFFFFF; margin-bottom:1cm">
+        <tr>
+            <td style="text-align:center; padding:1cm 0.5cm 1cm 3cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Average daily views</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ avg_views }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows the average views per day of this month (the sum of the total view of the month divided by the number of days of the month).<br></td>
+                    </tr>
+                </table>
+            </td>
+            <td style="text-align:center; padding:1cm 2cm 1cm 0.5cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Average monthly views</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ avg_views_year }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows the average views per month for this year, up until this month (the sum of the total views of the year, including this month, divided by the number of months since the beginning of the correspondent year).</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table style="padding: 0 1cm 0 1.5cm; background-color: #F1F1F1; margin-bottom: 1cm">
+        <tr>
+            <td style="text-align:center; padding:1cm 0.5cm 1cm 3cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Number of articles</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ articles }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows how many articles use files from this GLAM-Wiki partnership.</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="text-align:center; padding:1cm 2cm 1cm 0.5cm; margin:0; line-height: 1">
+                <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                    <tr>
+                        <td style="font-weight: bold; padding: 0.1cm 0;">Number of projects</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ wikis }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0; font-size:small">This figure shows how many distinct Wikimedia projects use files from this GLAM-Wiki partnership.</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <pdf:nextpage/>
+    <h1 style="padding:0 2cm 0 3cm">Most viewed images of this month</h1>
+    <table style="padding: 0 1cm 0 1.5cm; background-color: #F1F1F1; margin-bottom: 1cm">
+        {% for media_request in most_viewed %}
+            <tr>
+                <td style="text-align:center; padding:1cm 0.5cm 1cm 3cm; margin:0; line-height: 1">
+                    <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                        <tr>
+                            <td style="font-weight: bold; padding: 0.1cm 0;"><img src="https://upload.wikimedia.org{{ media_request.file.file_path }}" style="width: 4cm; height: auto;"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ media_request.requests }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0; font-size:small">This figure shows how many articles use files from this GLAM-Wiki partnership.</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="text-align:center; padding:1cm 2cm 1cm 0.5cm; margin:0; line-height: 1">
+                    <table style="margin:0; padding:0 1cm 0 0.75cm;">
+                        <tr>
+                            <td style="font-weight: bold; padding: 0.1cm 0;">Number of projects</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 3em; padding: 0.25cm 0 0.25cm 0;">{{ wikis }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0; font-size:small">This figure shows how many distinct Wikimedia projects use files from this GLAM-Wiki partnership.</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{#<table>#}
+{#    <tr style="background-color: #345FAA; width: 588px; height: 188px">#}
+{#        <td style="padding:112px 0 28px 84px;"><img src="..\static\images\icone.png" width="112px" height="45px"></td>#}
+{#        <td style="padding:1cm 1cm 1cm 0; text-align: center; font-size: 2em; font-weight: bold; color: white; ">{{ glam.name_pt }}<br>{{ timestamp|date:"F/Y" }}</td>#}
+{#    </tr>#}
+{#    <tr style="padding:1em; border: 1px solid red">#}
+{#        <td><table><tr><td>Total media files</td></tr><tr><td>{{ files }}</td></tr></table></td>#}
+{#    </tr>#}
+{#</table>#}
+</body>
+</html>

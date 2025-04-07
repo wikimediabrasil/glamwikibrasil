@@ -1,0 +1,39 @@
+{% load static %}
+{% load i18n %}
+
+<nav class="nav_wrapper">
+    <div class="nav_section">
+        <div class="nav_subsection">
+            <a href="{% url 'glams:index' %}" aria-label="{% trans 'Homepage' %}">
+                <img class="nav_logo" src="{% static 'images/icon.svg' %}" alt="{% trans "Logo for the project" %}">
+            </a>
+        </div>
+        <div class="nav_separator"></div>
+        <div class="nav_subsection">
+            <a href="{% url 'glams:glam_list' %}" aria-label="{% trans 'GLAM-Wiki partnerships' %}">
+                <i class="nav_icon fa-solid fa-handshake-simple"></i>
+                <span class="nav_title">{% trans "GLAM-Wiki partnerships" %}</span>
+            </a>
+        </div>
+        <div class="nav_separator"></div>
+        <div class="nav_subsection">
+            <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}">
+                <i class="nav_icon fa-solid fa-building-columns"></i>
+                <span class="nav_title">{% trans "Institutions" %}</span>
+            </a>
+        </div>
+        <div class="nav_separator"></div>
+        <div class="nav_block">
+            {% include 'i18n.html' %}
+        </div>
+        <div class="nav_separator"></div>
+    </div>
+{#    <div class="nav_section nav_bottom">#}
+{#        <div class="nav_subsection">#}
+{#            <a href="{% url 'glams:about' %}" aria-label="{% trans 'About' %}">#}
+{#                <i class="nav_icon fa-solid fa-right-to-bracket"></i>#}
+{#                <span class="nav_title">{% trans "About" %}</span>#}
+{#            </a>#}
+{#        </div>#}
+{#    </div>#}
+</nav>

@@ -1,0 +1,9 @@
+.idea
+__pycache__/
+*/__pycache__
+*.pyc
+venv/
+Lib/
+Scripts/
+*.sqlite3
+glamwikibrasil/settings_local.py
