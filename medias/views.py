@@ -1,8 +1,7 @@
 import calendar
 from math import floor
-from operator import index
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 
 from more_itertools import chunked
 
@@ -16,6 +15,8 @@ def update_glam_mediafiles(request, pk):
     category_members = get_category_members(url_to_category_name(glam.category_url))
     create_mediafile_instances(pk, category_members)
 
+    return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
+
 
 def update_glam_mediafiles_requests(request, pk, start=None, end=None):
     glam = get_object_or_404(Glam, pk=pk)
@@ -23,6 +24,8 @@ def update_glam_mediafiles_requests(request, pk, start=None, end=None):
     for media in medias:
         media_requests = get_requests(media, start=start, end=end)
         create_mediarequest(media.pk, media_requests)
+
+    return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
 def update_glam_mediafiles_usage(request, pk):
@@ -33,6 +36,8 @@ def update_glam_mediafiles_usage(request, pk):
         filenames = [media.filename for media in batch]
         media_usage = get_usage("|File:".join(filenames))
         create_mediausage_instances(media_usage)
+
+    return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
 # ======================================================================================================================
