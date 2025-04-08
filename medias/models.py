@@ -57,9 +57,9 @@ class MediaRequests(models.Model):
 
 class MediaUsage(models.Model):
     file = models.ForeignKey(MediaFile, on_delete=models.CASCADE)
-    title = models.CharField(max_length=500)
+    title = models.CharField(max_length=5000)
     wiki = models.CharField(max_length=500)
-    url = models.URLField()
+    url = models.URLField(max_length=5000)
     page_id = models.CharField(max_length=50)
     namespace = models.CharField(max_length=5)
     retrieved_at = models.DateTimeField(auto_now_add=True)
