@@ -102,7 +102,7 @@ def extract_numbers_from_db(pk, timestamp):
 
     media_requests_objects = MediaRequests.objects.filter(file__glam=glam, timestamp=timestamp)
     media_requests = media_requests_objects.values_list('requests', flat=True)
-    usage = MediaUsage.objects.filter(file__glam=glam).values("page_id", "wiki")
+    usage = MediaUsage.objects.filter(file__glam=glam, namespace="0").values("page_id", "wiki")
     total_views_for_the_year_until_now, n_months = get_views_for_year_until_month(glam, timestamp)
 
     total_media_files = MediaFile.objects.filter(glam=glam).count()
