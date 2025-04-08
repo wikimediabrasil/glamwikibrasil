@@ -57,7 +57,7 @@ def glam_list(request):
 
 def glam_detail(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
-    media_requests = MediaRequests.objects.filter(file__glam=glam).values("timestamp").annotate(total=Sum("requests"))
+    media_requests = MediaRequests.objects.filter(file__glam=glam).order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))
     timestamp_options = list(media_requests.values_list("timestamp", flat=True))
 
     return render(request, 'glams/glam_detail.html', {'item': glam, 'chart_data': list(media_requests), 'timestamp_options': timestamp_options})
