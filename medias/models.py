@@ -45,6 +45,9 @@ class MediaRequests(models.Model):
     requests = models.PositiveIntegerField(default=0)
     retrieved_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ("file", "timestamp", "referer", "agent", "granularity")
+
     def formatted_timestamp(self):
         if len(self.timestamp) == 10:
             return f"{self.timestamp[:4]}-{self.timestamp[4:6]}-{self.timestamp[6:8]}"
