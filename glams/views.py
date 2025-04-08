@@ -10,7 +10,10 @@ from .forms import InstitutionForm, GlamForm
 # INSTITUTIONAL PAGES
 # ======================================================================================================================
 def index(request):
-    context = {}
+    media_requests = MediaRequests.objects.all().order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))
+    timestamp_options = list(media_requests.values_list("timestamp", flat=True))
+
+    context = {'chart_data': list(media_requests), 'timestamp_options': timestamp_options}
     return render(request, "glams/index.html", context=context)
 
 

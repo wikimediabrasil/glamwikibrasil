@@ -31,4 +31,76 @@
             </button>
         </a>
     </div>
+    <canvas id="myChart" width="1080" height="720"></canvas>
+{% endblock %}
+{% block scripts %}
+    <script>
+      const xAxis = "{% trans 'Date' %}";
+      const yAxis = "{% trans 'Monthly views' %}";
+      const y1Axis = "{% trans 'Cummulative views' %}";
+      const rawData = {{ chart_data|safe }};
+      const labels = rawData.map(item => {
+        const str = item.timestamp.toString();
+        return `${str.slice(0, 4)}-${str.slice(4, 6)}`;
+      });
+      const totals = rawData.map(item => item.total);
+      const cumulativeTotals = totals.reduce((acc, val, i) => {
+        acc.push(i === 0 ? val : acc[i - 1] + val);
+        return acc;
+      }, []);
+      const data = {
+        labels: labels,
+        datasets: [
+          {
+            label: y1Axis,
+            data: cumulativeTotals,
+            fill: false,
+            borderColor: '#EA5B0C',
+            backgroundColor: '#EA5B0C33',
+            tension: 0.4,
+            yAxisID: 'y1',
+          },
+          {
+            label: yAxis,
+            data: totals,
+            fill: true,
+            borderColor: '#0054b3',
+            backgroundColor: '#0054b333',
+            tension: 0.4,
+            yAxisID: 'y',
+          }
+        ]
+      };
+
+      const config = {
+        type: 'line',
+        data: data,
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: {display: true, text: xAxis}
+            },
+            y: {
+              type: 'linear',
+              beginAtZero: true,
+              title: {display: true, text: yAxis},
+              position: 'left',
+              display: true,
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {display: true, text: y1Axis},
+              grid: {
+                drawOnChartArea: false
+              }
+            }
+          }
+        }
+      };
+
+      new Chart(document.getElementById('myChart'), config);
+    </script>
 {% endblock %}
