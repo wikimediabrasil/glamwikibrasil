@@ -189,14 +189,20 @@ def create_mediausage_instances(data):
 def create_mediarequest(file_id, data):
     file = get_object_or_404(MediaFile, pk=file_id)
     for item in data:
-        MediaRequests.objects.create(
-            file=file,
-            referer=item["referer"],
-            granularity=item["granularity"],
-            timestamp=item["timestamp"],
-            agent=item["agent"],
-            requests=item["requests"],
-        )
+        exists = MediaRequests.objects.filter(file=file,
+                                              referer=item["referer"],
+                                              granularity=item["granularity"],
+                                              timestamp=item["timestamp"],
+                                              agent=item["agent"]).exists()
+        if not exists:
+            MediaRequests.objects.create(
+                file=file,
+                referer=item["referer"],
+                granularity=item["granularity"],
+                timestamp=item["timestamp"],
+                agent=item["agent"],
+                requests=item["requests"],
+            )
 
 
 def render_to_pdf(template_src, context_dict=None):
