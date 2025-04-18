@@ -25,6 +25,7 @@
         .flex-row { display: flex; flex-direction: row; }
         .ml3 { margin: 0 0 0 3cm; }
         .mr2 { margin: 0 2cm 0 0; }
+        .m0203 { margin: 0 2cm 0 3cm; }
         .box { justify-content: start; width: 50% }
         .note { font-weight: normal; font-size: small; }
         .pd05 { padding: 0.5cm 0; }
@@ -42,6 +43,8 @@
         .jc-sb { justify-content: space-between; }
         @media print { .last_elem { break-after: page; } }
     </style>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.js"></script>
 </head>
 <body>
 <div style="display: flex; flex-direction: row; background-color: #0054b3; padding: 3cm 0 1cm 0; gap:0.5cm;">
@@ -108,5 +111,144 @@
 <div style="margin-top: 1cm; padding: 0 2cm 0 3cm; font-size: small;">
     {% blocktrans %}All data is based on the files of this GLAM-Wiki partnership available at Wikimedia Commons. The data shows a monthly up-to-date snapshot of the usage and views of the files during the selected month, through a variety of metrics.<br><b>Sources:</b> The <a href="https://www.mediawiki.org/wiki/API:Main_page" title="MediaWiki API">MediaWiki API</a> and the <a href="https://api.wikimedia.org/wiki/Core_REST_API" title="Core REST API">Core REST API</a>.<br><b>Contact:</b> <a href="mailto:cultura@wmnobrasil.org" title="GLAM and Culture email">cultura@wmnobrasil.org</a>{% endblocktrans %}
 </div>
+<div class="flex-col">
+    <h1 class="pd3213">{% trans "Usage and views" %}</h1>
+    <div id="myChartContainer" class="w3-half m0203" style="margin-top:2em; width:16cm; height: 9cm">
+        <canvas id="myBarChart"></canvas>
+    </div>
+    <div id="myChartContainer_line" class="w3-half m0203" style="margin-top:2em; width:16cm; height: 9cm">
+        <canvas id="myLineChart"></canvas>
+    </div>
+</div>
+<div style="margin-top: 1cm; padding: 0 2cm 0 3cm; font-size: small;">
+    {% blocktrans %}All data is based on the files of this GLAM-Wiki partnership available at Wikimedia Commons. The data shows a monthly up-to-date snapshot of the usage and views of the files during the selected month, through a variety of metrics.<br><b>Sources:</b> The <a href="https://www.mediawiki.org/wiki/API:Main_page" title="MediaWiki API">MediaWiki API</a> and the <a href="https://api.wikimedia.org/wiki/Core_REST_API" title="Core REST API">Core REST API</a>.<br><b>Contact:</b> <a href="mailto:cultura@wmnobrasil.org" title="GLAM and Culture email">cultura@wmnobrasil.org</a>{% endblocktrans %}
+</div>
+
+<script>
+  const series_label = "{% trans 'Number of medias used' %}";
+  const rawData = {{ usage|safe }};
+  const labels = rawData.map(item => item.wiki);
+  const totals = rawData.map(item => item.total);
+  const config = {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: series_label,
+        data: totals,
+        backgroundColor: '#0054b3',
+        borderColor: '#0054b3',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      font: {
+        size: 14,
+      },
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true },
+        datalabels: {
+          display: true,
+          color: 'white',
+          align: 'center',
+          formatter: function(value, context) {
+            return value;
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      },
+    }
+  };
+  Chart.register(ChartDataLabels);
+  new Chart(document.getElementById('myBarChart'), config);
+</script>
+<script>
+      const xAxis = "{% trans 'Date' %}";
+      const yAxis = "{% trans 'Monthly views' %}";
+      const y1Axis = "{% trans 'Cummulative views' %}";
+      const rawData_2 = {{ request_data|safe }};
+      const labels_2 = rawData_2.map(item => {
+        const str = item.timestamp.toString();
+        return `${str.slice(0, 4)}-${str.slice(4, 6)}`;
+      });
+      const totals_2 = rawData_2.map(item => item.total);
+      const cumulativeTotals = totals_2.reduce((acc, val, i) => {
+        acc.push(i === 0 ? val : acc[i - 1] + val);
+        return acc;
+      }, []);
+      const data = {
+        labels: labels_2,
+        datasets: [
+          {
+            label: y1Axis,
+            data: cumulativeTotals,
+            fill: false,
+            borderColor: '#EA5B0C',
+            backgroundColor: '#EA5B0C33',
+            tension: 0.4,
+            yAxisID: 'y1',
+            pointRadius: 0,
+            pointHoverRadius: 0
+          },
+          {
+            label: yAxis,
+            data: totals_2,
+            fill: true,
+            borderColor: '#0054b3',
+            backgroundColor: '#0054b333',
+            tension: 0.4,
+            yAxisID: 'y',
+            pointRadius: 0,
+            pointHoverRadius: 0
+          }
+        ]
+      };
+
+      const config_2 = {
+        type: 'line',
+        data: data,
+        options: {
+          plugins: {
+            tooltip: {
+              enabled: false
+            },
+            datalabels: {
+              display: false
+            }
+          },
+          responsive: true,
+          scales: {
+            x: {
+              title: {display: true, text: xAxis}
+            },
+            y: {
+              type: 'linear',
+              beginAtZero: true,
+              title: {display: true, text: yAxis},
+              position: 'left',
+              display: true,
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {display: true, text: y1Axis},
+              grid: {
+                drawOnChartArea: false
+              }
+            }
+          }
+        }
+      };
+
+      new Chart(document.getElementById('myLineChart'), config_2);
+    </script>
 </body>
 </html>

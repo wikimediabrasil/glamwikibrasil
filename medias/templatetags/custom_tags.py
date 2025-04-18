@@ -13,6 +13,15 @@ def divide(a, b):
         return 0
 
 @register.filter
+def percent_divide(a, b):
+    try:
+        points = float(a) * 100 / float(b)
+        return f"{points:.1f}%".replace(",", ".")
+    except (ValueError, ZeroDivisionError, TypeError):
+        return "0%"
+
+
+@register.filter
 def timestamp2date(timestamp):
     return datetime.strptime(timestamp, "%Y%m%d00")
 
