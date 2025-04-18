@@ -1,5 +1,6 @@
 import re
 import requests
+
 from io import BytesIO
 from urllib.parse import unquote
 from datetime import datetime, timedelta
@@ -137,12 +138,23 @@ def get_requests(file, start, end, referer="all-referers", agent="user", granula
         return []
 
 
+async def get_requests_async(session, file_path, start, end, referer="all-referers", agent="user", granularity="monthly"):
+    url = f"https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/{referer}/{agent}/{file_path.replace('/','%2F')}/{granularity}/{start}/{end}"
+    async with session.get(url) as response:
+        data = await response.json()
+        return data.get("items", [])
+
+
 def create_mediafile_instances(glam_id, dataset):
     glam = Glam.objects.get(pk=glam_id)
 
-    for idx, data in dataset.items():
+    existing_ids = set(MediaFile.objects.filter(page_id__in=[data["pageid"] for data in dataset.values()]).values_list("page_id",flat=True))
+
+    filtered_dataset = { page_id: data for page_id, data in dataset.items() if page_id not in existing_ids }
+
+    new_instances = []
+    for page_id, data in filtered_dataset.items():
         # PROP
-        page_id = data["pageid"]
         filename = clean_filename(data["title"])
 
         # IMAGEINFO
@@ -154,21 +166,18 @@ def create_mediafile_instances(glam_id, dataset):
         uploader = iidata["user"]
         extension = mime
 
-        # REVISION
-        # file_license = clean_license(data["revisions"][0]["slots"]["main"]["*"])
+        new_instances.append(MediaFile(
+            page_id=page_id,
+            filename=filename,
+            file_path=file_path,
+            thumb_path=thumb_path,
+            upload_date=upload_date,
+            uploader=uploader,
+            extension=extension,
+            glam=glam,
+        ))
 
-        exists = MediaFile.objects.filter(page_id=page_id).exists()
-        if not exists:
-            MediaFile.objects.create(
-                page_id=page_id,
-                filename=filename,
-                file_path=file_path,
-                thumb_path=thumb_path,
-                upload_date=upload_date,
-                uploader=uploader,
-                extension=extension,
-                glam=glam,
-            )
+    MediaFile.objects.bulk_create(new_instances, batch_size=1000)
 
 
 def create_mediausage_instances(data):
@@ -188,6 +197,8 @@ def create_mediausage_instances(data):
 
 def create_mediarequest(file_id, data):
     file = get_object_or_404(MediaFile, pk=file_id)
+    new_instances = []
+
     for item in data:
         exists = MediaRequests.objects.filter(file=file,
                                               referer=item["referer"],
@@ -195,14 +206,16 @@ def create_mediarequest(file_id, data):
                                               timestamp=item["timestamp"],
                                               agent=item["agent"]).exists()
         if not exists:
-            MediaRequests.objects.create(
+            new_instances.append(MediaRequests.objects.create(
                 file=file,
                 referer=item["referer"],
                 granularity=item["granularity"],
                 timestamp=item["timestamp"],
                 agent=item["agent"],
                 requests=item["requests"],
-            )
+            ))
+
+    MediaRequests.objects.bulk_create(new_instances, batch_size=1000)
 
 
 def render_to_pdf(template_src, context_dict=None):

@@ -1,10 +1,12 @@
 import calendar
+import aiohttp
+import asyncio
+from datetime import datetime, timedelta
 from math import floor
-
+from asgiref.sync import sync_to_async
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, reverse
-
 from more_itertools import chunked
-
 from .utils import *
 
 # ======================================================================================================================
@@ -18,14 +20,41 @@ def update_glam_mediafiles(request, pk):
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
+@csrf_exempt
 def update_glam_mediafiles_requests(request, pk, start=None, end=None):
-    glam = get_object_or_404(Glam, pk=pk)
-    medias = MediaFile.objects.filter(glam=glam)
-    for media in medias:
-        media_requests = get_requests(media, start=start, end=end)
-        create_mediarequest(media.pk, media_requests)
-
+    asyncio.run(update_glam_async(pk, start, end))
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
+
+
+async def update_glam_async(pk, start, end):
+    glam = await sync_to_async(Glam.objects.get)(pk=pk)
+    medias = await sync_to_async(list)(MediaFile.objects.filter(glam=glam))
+
+    if not start:
+        start = "2015010100"
+    if not end:
+        last_month = datetime.now().replace(day=1)-timedelta(days=1)
+        end = last_month.strftime("%Y%m%d") + "00"
+
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for media in medias:
+            tasks.append(process_media(session, media, start, end))
+        await asyncio.gather(*tasks)
+
+
+async def process_media(session, media, start, end):
+    data = await get_requests_async(session, media.file_path, start, end)
+    await sync_to_async(create_mediarequest)(media.pk, data)
+
+# def update_glam_mediafiles_requests(request, pk, start=None, end=None):
+#     glam = get_object_or_404(Glam, pk=pk)
+#     medias = MediaFile.objects.filter(glam=glam)
+#     for media in medias:
+#         media_requests = get_requests(media, start=start, end=end)
+#         create_mediarequest(media.pk, media_requests)
+#
+#     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
 def update_glam_mediafiles_usage(request, pk):
