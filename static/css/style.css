@@ -51,7 +51,7 @@ button:not(.circle_button), .button { flex: 1; padding: 0.5em 1em; border-radius
 .custom-button { color: var(--color-10); background-color: var(--color-30); &:hover { background-color: var(--color-10); color: var(--color-30); } }
 .custom-red-button { color: var(--color-40); background-color: var(--color-30); &:hover { background-color: var(--color-40); color: var(--color-30); } }
 .custom-grey-button { color: var(--color-50); background-color: var(--color-30); &:hover { background-color: var(--color-50); color: var(--color-30); } }
-.button-container { display: flex; justify-content: space-between; gap: 2em; width: calc(100vw - 4em); max-width: 600px; padding: 0; }
+.button-container { display: flex; justify-content: space-between; gap: 2em; padding: 0; }
 .button-vertical-container { display: flex; justify-content: space-between; gap: 1em; max-width: 600px; padding: 0; flex-direction: column; }
 .button-container a { flex: 1; }
 .button-container button, .button-vertical-container button { width: 100%; }

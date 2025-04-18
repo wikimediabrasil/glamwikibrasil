@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.db.models import Sum
 
-from medias.models import MediaRequests
+from medias.models import MediaRequests, MediaFile, MediaUsage
 from .models import Institution, Glam
 from .forms import InstitutionForm, GlamForm
 
@@ -61,9 +61,21 @@ def glam_list(request):
 def glam_detail(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     media_requests = MediaRequests.objects.filter(file__glam=glam).order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))
-    timestamp_options = list(media_requests.values_list("timestamp", flat=True))
+    media_files = MediaFile.objects.filter(glam=glam).count()
+    total_views = sum(item["total"] for item in media_requests)
+    total_projects = MediaUsage.objects.filter(file__glam=glam).values("wiki").distinct().count()
+    timestamp_options = list(media_requests.values_list("timestamp", flat=True).order_by("-timestamp"))
 
-    return render(request, 'glams/glam_detail.html', {'item': glam, 'chart_data': list(media_requests), 'timestamp_options': timestamp_options})
+    context = {
+        "item": glam,
+        "chart_data": list(media_requests),
+        "timestamp_options": timestamp_options,
+        "media_files": media_files,
+        "total_views": total_views,
+        "total_projects": total_projects
+    }
+
+    return render(request, 'glams/glam_detail.html', context)
 
 
 # ======================================================================================================================

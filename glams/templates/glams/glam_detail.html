@@ -15,39 +15,64 @@
     </ol>
 {% endblock %}
 {% block content %}
-    <h1>{{ item.name_pt }}</h1>
-    <div class="w3-container flex-center">
-        <p class="field_title">{% trans "Name of the institution in Portuguese" %}</p>
-        <p class="field_value">{{ item.name_pt }}</p>
-        <p class="field_title">{% trans "Wikidata item" %}</p>
-        <p class="field_value">{{ item.wikidata }}</p>
-        <p class="field_title">{% trans "URL address" %}</p>
-        <p class="field_value"><a href="{{ item.website_url }}"
-                                  title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
-        <p class="field_title">{% trans "Institutions" %}</p>
-        <p class="field_value">{% for institution in item.institutions.all %}{{ institution }}<br>{% endfor %}</p>
+    <div class="w3-row">
+        <div class="w3-quarter">&nbsp;</div>
+        <div class="w3-half"><h1>{{ item.name_pt }}</h1></div>
     </div>
-    <div class="flex-center button-container">
-        <a href="{% url 'glams:glam_update' pk=item.wikidata %}">
-            <button class="custom-button">{% trans "Update" %}</button>
-        </a>
-        <a href="{% url 'glams:glam_delete' pk=item.wikidata %}">
-            <button class="custom-red-button">{% trans "Delete" %}</button>
-        </a>
+    <div class="w3-row">
+        <div class="w3-quarter">&nbsp;</div>
+        <div class="w3-half">
+            <div class="w3-half">
+                <p class="field_title"><i class="fa-solid fa-barcode"></i> {% trans "Wikidata item" %}</p>
+                <p class="field_value"><a href="https://www.wikidata.org/wiki/{{ item.wikidata }}" title="{% trans 'Wikidata item' %}">{{ item.wikidata }}</a></p>
+                <p class="field_title"><i class="fa-brands fa-wikipedia-w"></i> {% trans "URL address" %}</p>
+                <p class="field_value"><a href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url|wiki_page }}</a></p>
+                <p class="field_title"><i class="fa-solid fa-building-columns"></i> {% trans "Institutions" %}</p>
+                <p class="field_value">{% for institution in item.institutions.all %}{{ institution }}<br>{% endfor %}</p>
+            </div>
+            <div class="w3-half">
+                <p class="field_title"><i class="fa-solid fa-image"></i> {% trans "Number of files" %}</p>
+                <p class="field_value">{{ media_files }}</p>
+                <p class="field_title"><i class="fa-solid fa-eye"></i> {% trans "Total views" %}</p>
+                <p class="field_value">{{ total_views }}</p>
+                <p class="field_title"><i class="fa-solid fa-diagram-project"></i> {% trans "Number of projects" %}</p>
+                <p class="field_value">{{ total_projects }}</p>
+            </div>
+        </div>
     </div>
-    <div class="flex-center" style="margin-top:2em;">
+    <div class="w3-row">
+        <div class="w3-quarter">&nbsp;</div>
+        <div class="w3-half">
+            <div class="button-container">
+                <a href="{% url 'glams:glam_update' pk=item.wikidata %}">
+                    <button class="custom-button">{% trans "Update" %}</button>
+                </a>
+                <a href="{% url 'glams:glam_delete' pk=item.wikidata %}">
+                    <button class="custom-red-button">{% trans "Delete" %}</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="w3-row">
+        <div class="w3-quarter">&nbsp;</div>
+        <div class="w3-half">
+            <form style="width: 100%" method="post" action="{% url 'medias:glam_report' pk=item.wikidata %}">
+                {% csrf_token %}
+                <label for="generate_report">{% trans "Generate report for specific month:" %}</label>
+                <select id="generate_report" name="timestamp" style="width: 100%">
+                    {% for timestamp in timestamp_options %}
+                        <option value="{{ timestamp }}">{{ timestamp|timestamp2date|date:"F Y" }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" class="button custom-button submit-button" value="{% trans 'Generate report' %}">
+            </form>
+        </div>
+    </div>
+    <div class="w3-row">
+    <div class="w3-quarter">&nbsp;</div>
+    <div class="w3-half" style="margin-top:2em;">
         <canvas id="myChart" width="1080" height="720"></canvas>
-        <form method="post" action="{% url 'medias:glam_report' pk=item.wikidata %}">
-            {% csrf_token %}
-            <label for="generate_report">{% trans "Generate report for specific month:" %}</label>
-            <select id="generate_report" name="timestamp">
-                <option value="">---------------</option>
-                {% for timestamp in timestamp_options %}
-                    <option value="{{ timestamp }}">{{ timestamp|timestamp2date|date:"F Y" }}</option>
-                {% endfor %}
-            </select>
-            <input type="submit" class="button custom-button submit-button" value="{% trans 'Generate report' %}">
-        </form>
+    </div>
     </div>
 {% endblock %}
 {% block scripts %}
