@@ -15,7 +15,7 @@ from .utils import *
 # UPDATE DATABASE
 # ======================================================================================================================
 def all_glams_report(request):
-    glams = Glam.objects.filter(wikidata__in=["Q101001059","Q102578799","Q106824094","Q107333426","Q108121854","Q108274906","Q108463444","Q108647962","Q108904897"])
+    glams = Glam.objects.all()
     glam_requests = {}
     for glam in glams:
         total_requests = MediaRequests.objects.filter(file__glam=glam).aggregate(total=Sum("requests"))["total"] or 0
