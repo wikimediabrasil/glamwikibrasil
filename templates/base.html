@@ -25,9 +25,8 @@
         <main class="table-container">
             {% block breadcrumbs %}{% endblock %}
             {% block banner %}
-                <h1 class="w3-row logo">
-                    <img class="disappear" src="{% static 'images/logo.svg' %}" alt="{% trans "Logo for the project" %}" width="3em">
-                    <span>{% trans "GLAM Wiki Brasil" %}</span>
+                <h1 class="w3-row logo disappear">
+                    <img class="disappear" src="{% static 'images/logo.svg' %}" alt="{% trans "Logo for the project" %}" width="5em">
                 </h1>
             {% endblock %}
             {% block content %}{% endblock %}

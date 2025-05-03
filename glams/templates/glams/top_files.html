@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load custom_tags %}
+
+{% block title %}{% trans "Top files" %}{% endblock %}
+{% block banner %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'medias:all_glams' %}">{% trans "All GLAMs" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "Top files" %}</li>
+    </ol>
+{% endblock %}
+{% block scripts %}
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/bootstrap-table.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+    <script>
+        $(function () { $('#files').bootstrapTable(); });
+        $(function (){ $('[class*="bootstrap-table-filter-control-"]').wrap("<label style='width: 100%'></label>"); });
+    </script>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="w3-row">
+        <table id="files" class="table table-striped table-fixed" data-mobile-responsive="true" data-check-on-init="true">
+            <thead>
+            <tr>
+                <th data-field="Name" data-sortable="true">{% trans "Filename" %}</th>
+                <th data-field="Views" data-sortable="true">{% trans "Number of total views" %}</th>
+                <th data-field="GLAM" data-sortable="true">{% trans "GLAM-Wiki Partnership" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for media_request in dataset %}
+                <tr>
+                    <td data-name="Name"><a href="https://commons.wikimedia.org/wiki/File:{{ media_request.file__filename }}" title="{% blocktrans with name=glam_name %}{{ media_request.file__filename }} at Wikimedia Commons{% endblocktrans %}">{{ media_request.file__filename }}</a></td>
+                    <td data-name="Views">{{ media_request.total_requests }}</td>
+                    <td data-name="GLAM"><a href="{% url 'glams:glam_detail' pk=media_request.file__glam__wikidata %}" title="{% blocktrans with fname=media_request.file__filename %}GLAM-Wiki partnership for {{ fname }}{% endblocktrans %}">{{ media_request.file__glam__name_pt }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

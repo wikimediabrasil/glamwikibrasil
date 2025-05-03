@@ -44,7 +44,7 @@ input { display: block }
 
 /* BANNER */
 .logo { display: flex; flex-direction: column; align-items: center;  }
-.logo img { width: 3em; height: 3em; }
+.logo img { width: 8.1em; height: auto; }
 
 /* BUTTONS */
 button:not(.circle_button), .button { flex: 1; padding: 0.5em 1em; border-radius: 0.75em; border: 2px solid; transition: all ease-in-out 0.2s; }
@@ -52,7 +52,7 @@ button:not(.circle_button), .button { flex: 1; padding: 0.5em 1em; border-radius
 .custom-red-button { color: var(--color-40); background-color: var(--color-30); &:hover { background-color: var(--color-40); color: var(--color-30); } }
 .custom-grey-button { color: var(--color-50); background-color: var(--color-30); &:hover { background-color: var(--color-50); color: var(--color-30); } }
 .button-container { display: flex; justify-content: space-between; gap: 2em; padding: 0; }
-.button-vertical-container { display: flex; justify-content: space-between; gap: 1em; max-width: 600px; padding: 0; flex-direction: column; }
+.button-vertical-container { display: flex; justify-content: space-between; gap: 1em; padding: 0; flex-direction: column; }
 .button-container a { flex: 1; }
 .button-container button, .button-vertical-container button { width: 100%; }
 
@@ -71,6 +71,7 @@ button:not(.circle_button), .button { flex: 1; padding: 0.5em 1em; border-radius
     img { max-width: 100%; }
     .button-container { flex-direction: column; gap: 1em; }
     .breadcrumb-item + .breadcrumb-item::before { content: ""; margin: 0; }
+    .table-container { padding: 1em !important;}
 }
 
 /* CAROUSEL */
@@ -106,5 +107,5 @@ tr { text-align: center; height: 2em; }
     border-radius: 1em;
     &:hover { background-color: var(--color-51); }
 }
-thead tr { background-color: var(--color-20); color: var(--color-30); }
+thead tr, thead th { background-color: var(--color-20); color: var(--color-30) !important; }
 tbody tr:nth-child(even) { background-color: var(--color-30); }

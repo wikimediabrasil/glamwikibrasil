@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.db.models import Sum
 
@@ -10,16 +11,21 @@ from .forms import InstitutionForm, GlamForm
 # INSTITUTIONAL PAGES
 # ======================================================================================================================
 def index(request):
-    media_requests = MediaRequests.objects.all().order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))
-    timestamp_options = list(media_requests.values_list("timestamp", flat=True))
+    total_requests = MediaRequests.objects.aggregate(total=Sum("requests"))["total"] or 0
+    total_files = MediaFile.objects.count() or 0
+    total_glams = Glam.objects.count() or 0
 
-    context = {'chart_data': list(media_requests), 'timestamp_options': timestamp_options}
+    context = {"total_requests": total_requests, "total_files": total_files, "total_glams": total_glams}
     return render(request, "glams/index.html", context=context)
 
+"""
+12,users,user
+"""
 
 # ======================================================================================================================
 # CREATE
 # ======================================================================================================================
+@permission_required('glams.add_institution')
 def institution_create(request):
     if request.method == 'POST':
         form = InstitutionForm(request.POST)
@@ -30,6 +36,7 @@ def institution_create(request):
         form = InstitutionForm()
     return render(request, 'glams/institution_create.html', {'form': form})
 
+@permission_required('glams.add_glam')
 def glam_create(request):
     if request.method == 'POST':
         form = GlamForm(request.POST)
@@ -43,21 +50,25 @@ def glam_create(request):
 # ======================================================================================================================
 # RETRIEVE
 # ======================================================================================================================
+@permission_required('glams.view_institution')
 def institution_list(request):
     items = Institution.objects.all()
     return render(request, 'glams/institution_list.html', {'items': items})
 
 
+@permission_required('glams.view_institution')
 def institution_detail(request, pk):
     institution = get_object_or_404(Institution, pk=pk)
     return render(request, 'glams/institution_detail.html', {'item': institution})
 
 
+@permission_required('glams.view_glam')
 def glam_list(request):
     items = Glam.objects.all()
     return render(request, 'glams/glam_list.html', {'items': items})
 
 
+@permission_required('glams.view_glam')
 def glam_detail(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     media_requests = MediaRequests.objects.filter(file__glam=glam).order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))
@@ -81,6 +92,7 @@ def glam_detail(request, pk):
 # ======================================================================================================================
 # UPDATE
 # ======================================================================================================================
+@permission_required('glams.change_institution')
 def institution_update(request, pk):
     institution = get_object_or_404(Institution, pk=pk)
     if request.method == 'POST':
@@ -93,6 +105,7 @@ def institution_update(request, pk):
     return render(request, 'glams/institution_update.html', {'form': form})
 
 
+@permission_required('glams.change_glam')
 def glam_update(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     if request.method == 'POST':
@@ -108,6 +121,7 @@ def glam_update(request, pk):
 # ======================================================================================================================
 # DELETE
 # ======================================================================================================================
+@permission_required('glams.delete_institution')
 def institution_delete(request, pk):
     institution = get_object_or_404(Institution, pk=pk)
     if request.method == 'POST':
@@ -116,6 +130,7 @@ def institution_delete(request, pk):
     return render(request, 'glams/institution_delete.html', {'item': institution})
 
 
+@permission_required('glams.delete_glam')
 def glam_delete(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     if request.method == 'POST':

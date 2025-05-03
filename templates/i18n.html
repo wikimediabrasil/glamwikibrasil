@@ -4,7 +4,7 @@
     {% csrf_token %}
     <input name="next" type="hidden" value="/"/>
     <label for="language_selector"><i class="nav_icon fa-solid fa-language"></i>
-        <span class="nav_btn_title">{% translate "Language" %}</span>
+        <span class="nav_title">{% translate "Language" %}</span>
     </label><br>
     <select id="language_selector" class="language_selector" name="language" style="width: auto;" onchange="this.form.submit()">
         {% get_current_language as LANGUAGE_CODE %}

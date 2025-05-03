@@ -16,24 +16,31 @@
             </a>
         </div>
         <div class="nav_separator"></div>
-        <div class="nav_subsection">
-            <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}">
-                <i class="nav_icon fa-solid fa-building-columns"></i>
-                <span class="nav_title">{% trans "Institutions" %}</span>
-            </a>
-        </div>
-        <div class="nav_separator"></div>
         <div class="nav_block">
             {% include 'i18n.html' %}
         </div>
         <div class="nav_separator"></div>
+        <div class="nav_subsection">
+            <a href="{% url 'medias:all_glams' %}" aria-label="{% trans 'General report' %}">
+                <i class="nav_icon fa-solid fa-chart-simple"></i>
+                <span class="nav_title">{% trans "General report" %}</span>
+            </a>
+        </div>
+        <div class="nav_separator"></div>
+        <div class="nav_subsection">
+            <a href="{% url 'medias:top_files' %}" aria-label="{% trans 'Top files' %}">
+                <i class="nav_icon fa-solid fa-award"></i>
+                <span class="nav_title">{% trans "Top files" %}</span>
+            </a>
+        </div>
     </div>
-{#    <div class="nav_section nav_bottom">#}
-{#        <div class="nav_subsection">#}
-{#            <a href="{% url 'glams:about' %}" aria-label="{% trans 'About' %}">#}
-{#                <i class="nav_icon fa-solid fa-right-to-bracket"></i>#}
-{#                <span class="nav_title">{% trans "About" %}</span>#}
-{#            </a>#}
-{#        </div>#}
-{#    </div>#}
+    <div class="nav_section nav_bottom">
+        <div class="nav_separator"></div>
+        <div class="nav_subsection">
+            <a href="{% url 'medias:top_files' %}" aria-label="{% trans 'Top files' %}">
+                <i class="nav_icon fa-solid fa-award"></i>
+                <span class="nav_title">{% trans "Top files" %}</span>
+            </a>
+        </div>
+    </div>
 </nav>

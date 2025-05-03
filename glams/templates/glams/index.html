@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-
 {% load static %}
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{% trans "Homepage" %}{% endblock %}
 {% block breadcrumbs %}
@@ -9,98 +9,76 @@
         <li class="breadcrumb-item active">{% trans "Home" %}</li>
     </ol>
 {% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/counter.css' %}">{% endblock %}
 {% block content %}
-    <h2>{% trans 'Welcome to the Wikimedia Brasil GLAM dashboard!' %}</h2>
-    <p>
-        {% blocktrans  %}This application is our central hub for managing, analyzing, and enhancing digital collections across <b>G</b>aleries, <b>L</b>ibraries, <b>A</b>rchives and <b>M</b>useums in Brazil. It was designed to support cultural institutions by providing data visualization for GLAM-Wiki partnerships with Wikimedia Brasil.{% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans  %}If you want help in digitize artifacts, artworks, and making your collections more accessible, please reach out to us!{% endblocktrans %}
-    </p>
-    <div class="gallery">
+    <div class="w3-row">
+    <div class="w3-quarter">&nbsp;</div>
+    <div class="w3-half flex-center">
+        <h2>{% trans 'Welcome to the Wikimedia Brasil GLAM dashboard!' %}</h2>
+        <p>{% blocktrans %}Central hub for managing and analyzing digital collections across <b>G</b>aleries, <b>L</b>ibraries, <b>A</b>rchives and <b>M</b>useums in Brazil. It is designed to support cultural institutions by providing data visualization for GLAM-Wiki partnerships with Wikimedia Brasil.{% endblocktrans %}</p>
+        <div class="counter-container">
+            <div class="counter">{% blocktrans %}<div id="view-counter" data-target="{{ total_requests }}"></div> <span class="counter-label">views</span>{% endblocktrans %}</div>
+            <div class="counter">{% blocktrans %}<div id="file-counter" data-target="{{ total_files }}"></div> <span class="counter-label">files</span>{% endblocktrans %}</div>
+            <div class="counter">{% blocktrans %}<div id="glam-counter" data-target="{{ total_glams }}"></div> <span class="counter-label">GLAM partnerships and Wikiprojects</span>{% endblocktrans %}</div>
+        </div>
+        <div class="button-container" style="margin-top: 1em;">
+            <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}"><button class="custom-button">{% trans "Institutions" %}</button></a>
+            <a href="{% url 'glams:glam_list' %}" aria-label="{% trans 'GLAM-Wiki Partnerships' %}"><button class="custom-button">{% trans "GLAMs" %}</button></a>
+        </div>
     </div>
-    <div class="button-vertical-container">
-        <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}">
-            <button class="custom-button">
-                {% trans "Institutions" %}
-            </button>
-        </a>
-        <a href="{% url 'glams:glam_list' %}" aria-label="{% trans 'GLAM-Wiki Partnerships' %}">
-            <button class="custom-button">
-                {% trans "GLAMs" %}
-            </button>
-        </a>
     </div>
-    <canvas id="myChart" width="1080" height="720"></canvas>
 {% endblock %}
+
 {% block scripts %}
     <script>
-      const xAxis = "{% trans 'Date' %}";
-      const yAxis = "{% trans 'Monthly views' %}";
-      const y1Axis = "{% trans 'Cummulative views' %}";
-      const rawData = {{ chart_data|safe }};
-      const labels = rawData.map(item => {
-        const str = item.timestamp.toString();
-        return `${str.slice(0, 4)}-${str.slice(4, 6)}`;
-      });
-      const totals = rawData.map(item => item.total);
-      const cumulativeTotals = totals.reduce((acc, val, i) => {
-        acc.push(i === 0 ? val : acc[i - 1] + val);
-        return acc;
-      }, []);
-      const data = {
-        labels: labels,
-        datasets: [
-          {
-            label: y1Axis,
-            data: cumulativeTotals,
-            fill: false,
-            borderColor: '#EA5B0C',
-            backgroundColor: '#EA5B0C33',
-            tension: 0.4,
-            yAxisID: 'y1',
-          },
-          {
-            label: yAxis,
-            data: totals,
-            fill: true,
-            borderColor: '#0054b3',
-            backgroundColor: '#0054b333',
-            tension: 0.4,
-            yAxisID: 'y',
-          }
-        ]
-      };
+      document.addEventListener("DOMContentLoaded", () => {
+        const formatNumber = (num) => {
+          const formatted = num.toLocaleString();
+          const fragment = document.createDocumentFragment();
 
-      const config = {
-        type: 'line',
-        data: data,
-        options: {
-          responsive: true,
-          scales: {
-            x: {
-              title: {display: true, text: xAxis}
-            },
-            y: {
-              type: 'linear',
-              beginAtZero: true,
-              title: {display: true, text: yAxis},
-              position: 'left',
-              display: true,
-            },
-            y1: {
-              type: 'linear',
-              display: true,
-              position: 'right',
-              title: {display: true, text: y1Axis},
-              grid: {
-                drawOnChartArea: false
-              }
+          [...formatted].forEach(char => {
+            const span = document.createElement("span");
+            span.textContent = char;
+            span.classList.add("counter-digit");
+            fragment.appendChild(span);
+          });
+
+          return fragment;
+        };
+
+        const updateCounter = (counter, target) => {
+          let current = 0;
+          const duration = 2000;
+          const steps = 60;
+
+          const tick = () => {
+            const intervalTime = duration / steps;
+            const increment = target / steps;
+            current += increment;
+            if (current < target) {
+              counter.innerHTML = '';
+              counter.appendChild(formatNumber(Math.floor(current)));
+              setTimeout(tick, intervalTime);
+            } else {
+              counter.innerHTML = '';
+              counter.appendChild(formatNumber(target));
             }
-          }
-        }
-      };
+          };
 
-      new Chart(document.getElementById('myChart'), config);
+          tick()
+        };
+
+        const view_counter = document.getElementById("view-counter");
+        const file_counter = document.getElementById("file-counter");
+        const glam_counter = document.getElementById("glam-counter");
+        const view_target = parseInt(+view_counter.getAttribute("data-target").replace(/[.,]/g, ""), 10);
+        const file_target = parseInt(+file_counter.getAttribute("data-target").replace(/[.,]/g, ""), 10);
+        const glam_target = parseInt(+glam_counter.getAttribute("data-target").replace(/[.,]/g, ""), 10);
+
+        updateCounter(view_counter, view_target);
+        updateCounter(file_counter, file_target);
+        updateCounter(glam_counter, glam_target);
+      });
     </script>
 {% endblock %}

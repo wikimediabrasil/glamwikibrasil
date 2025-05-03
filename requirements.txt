@@ -1,7 +1,15 @@
 Django
 requests
-xhtml2pdf
 python-dateutil
 mysqlclient
 whitenoise
 django-configurations
+matplotlib
+pandas
+pillow
+fpdf
+aiohttp
+asgiref
+more-itertools
+numpy
+social-auth-app-django

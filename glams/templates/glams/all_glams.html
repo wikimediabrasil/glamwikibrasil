@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load custom_tags %}
+
+{% block title %}{% trans "All glams" %}{% endblock %}
+{% block banner %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "All GLAMs" %}</li>
+        <li class="breadcrumb-item"><a href="{% url 'medias:top_files' %}">{% trans "Top files" %}</a></li>
+    </ol>
+{% endblock %}
+{% block scripts %}
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/bootstrap-table.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+    <script>
+        $(function () { $('#glams').bootstrapTable(); });
+        $(function (){ $('[class*="bootstrap-table-filter-control-"]').wrap("<label style='width: 100%'></label>"); });
+    </script>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap-table/1.21.2/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="w3-row">
+        <table id="glams" class="table table-striped table-fixed" data-mobile-responsive="true" data-check-on-init="true">
+            <thead>
+            <tr>
+                <th data-field="Name" data-sortable="true">{% trans "GLAM-Wiki Partnership" %}</th>
+                <th data-field="Views" data-sortable="true">{% trans "Number of total views" %}</th>
+                <th data-field="Files" data-sortable="true">{% trans "Number of files" %}</th>
+                <th data-field="Usage" data-sortable="true">{% trans "Number of pages using files" %}</th>
+                <th data-field="Wikis" data-sortable="true">{% trans "Number of Wikis using files" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for glam_name, glam_data in chart_data.items %}
+                <tr>
+                    <td data-name="Name"><a href="{% url 'glams:glam_detail' pk=glam_data.glam.wikidata %}" title="{% blocktrans with name=glam_name %}Details of {{ name }}{% endblocktrans %}">{{ glam_name }}</a></td>
+                    <td data-name="Views">{{ glam_data.total }}</td>
+                    <td data-name="Files">{{ glam_data.files }}</td>
+                    <td data-name="Usage">{{ glam_data.usage }}</td>
+                    <td data-name="Wikis">{{ glam_data.wiki }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="w3-row">
+        <canvas id="myChart" width="100%" height="100%"></canvas>
+    </div>
+{% endblock %}

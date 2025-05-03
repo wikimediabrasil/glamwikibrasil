@@ -1,0 +1,12 @@
+.counter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    text-align: center;
+    color: var(--color-60);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.counter { display: flex; gap:0.25em; flex-direction: column; }
+.counter-label { clear:both; }
+#view-counter, #file-counter, #glam-counter { font-size: 2em; }

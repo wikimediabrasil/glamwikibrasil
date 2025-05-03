@@ -1,18 +1,50 @@
 import calendar
 import aiohttp
 import asyncio
-from datetime import datetime, timedelta
 from math import floor
 from asgiref.sync import sync_to_async
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, reverse
 from django.db.models import Count, Sum
 from more_itertools import chunked
 from .utils import *
 
+
 # ======================================================================================================================
 # UPDATE DATABASE
 # ======================================================================================================================
+def all_glams_report(request):
+    glams = Glam.objects.filter(wikidata__in=["Q101001059","Q102578799","Q106824094","Q107333426","Q108121854","Q108274906","Q108463444","Q108647962","Q108904897"])
+    glam_requests = {}
+    for glam in glams:
+        total_requests = MediaRequests.objects.filter(file__glam=glam).aggregate(total=Sum("requests"))["total"] or 0
+        total_files = MediaFile.objects.filter(glam=glam).count()
+        usage = MediaUsage.objects.filter(file__glam=glam, namespace=0)
+        total_usage_page = usage.values_list("page_id", flat=True).distinct().count()
+        total_usage_wiki = usage.values_list("wiki", flat=True).distinct().count()
+        glam_requests[glam.name_pt] = {"glam": glam, "total": total_requests, "files": total_files, "usage": total_usage_page, "wiki": total_usage_wiki}
+
+    sorted_glam_requests = dict(sorted(glam_requests.items(), key=lambda item: item[1]["total"], reverse=True))
+    context = {"chart_data": sorted_glam_requests}
+
+    return render(request, 'glams/all_glams.html', context)
+
+
+def top_files_report(request):
+    most_viewed = MediaRequests.objects.all().values("file",
+                                                     "file__filename",
+                                                     "file__glam__name_pt",
+                                                     "file__glam__wikidata").annotate(total_requests=Sum("requests")).order_by("-total_requests")[:100]
+
+    context = {"dataset": most_viewed}
+
+    return render(request, 'glams/top_files.html', context)
+
+# ======================================================================================================================
+# UPDATE DATABASE
+# ======================================================================================================================
+@permission_required('medias.add_mediafile')
 def update_glam_mediafiles(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     category_members = get_category_members(url_to_category_name(glam.category_url))
@@ -21,7 +53,7 @@ def update_glam_mediafiles(request, pk):
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
-@csrf_exempt
+@permission_required('medias.add_mediarequests')
 def update_glam_mediafiles_requests(request, pk, start=None, end=None):
     asyncio.run(update_glam_async(pk, start, end))
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
@@ -38,26 +70,22 @@ async def update_glam_async(pk, start, end):
         end = last_month.strftime("%Y%m%d") + "00"
 
     async with aiohttp.ClientSession() as session:
-        tasks = []
-        for media in medias:
-            tasks.append(process_media(session, media, start, end))
-        await asyncio.gather(*tasks)
+        i=0
+        for media_batch in chunked(medias, 1000):
+            tasks = [get_requests_async(session, media.file_path, start, end) for media in media_batch]
+            responses = await asyncio.gather(*tasks)
+            all_data = list(zip(media_batch, responses))
+            await sync_to_async(create_media_request)(all_data)
+            print(i)
+            i=i+1
 
 
 async def process_media(session, media, start, end):
     data = await get_requests_async(session, media.file_path, start, end)
-    await sync_to_async(create_mediarequest)(media.pk, data)
-
-# def update_glam_mediafiles_requests(request, pk, start=None, end=None):
-#     glam = get_object_or_404(Glam, pk=pk)
-#     medias = MediaFile.objects.filter(glam=glam)
-#     for media in medias:
-#         media_requests = get_requests(media, start=start, end=end)
-#         create_mediarequest(media.pk, media_requests)
-#
-#     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
+    await sync_to_async(create_media_request)(media.pk, data)
 
 
+@permission_required('medias.add_mediausage')
 def update_glam_mediafiles_usage(request, pk):
     glam = get_object_or_404(Glam, pk=pk)
     medias = MediaFile.objects.filter(glam=glam).iterator()
@@ -76,7 +104,6 @@ def update_glam_mediafiles_usage(request, pk):
 def return_report(request, pk):
     timestamp = request.POST.get('timestamp')
     return redirect(reverse("medias:glam_report_for_month", kwargs={"pk": pk, "timestamp": timestamp}))
-    # return render_to_pdf("medias/report.html", context)
 
 
 def return_report_for_month(request, pk, timestamp):
@@ -96,27 +123,16 @@ def return_report_for_month(request, pk, timestamp):
         "request_data": list(_requests.order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))),
         "n_days": _n_days
     }
-    return render(request, "medias/report.html", context)
-
-
-def return_status(request, pk, timestamp):
-    glam, _files, _views, _avg_views, _avg_views_year, _most_viewed, _articles, _wikis, usage, _requests, _n_days = extract_numbers_from_db(pk, timestamp)
-
-    context = {
-        "files": _files,
-        "views": _views,
-        "avg_views": _avg_views,
-        "avg_views_year": _avg_views_year,
-        "most_viewed": _most_viewed,
-        "articles": _articles,
-        "wikis": _wikis,
-        "glam": glam,
-        "timestamp": datetime.strptime(timestamp,"%Y%m%d%H"),
-        "n_days": _n_days,
-        "usage": usage.values('wiki').annotate(total=Count('id')).order_by('-total'),
-    }
-    return render(request,"medias/report.html", context)
-    # return render_to_pdf("medias/report.html", context)
+    # return render(request, "medias/report.html", context)
+    # html_string = render_to_string("medias/report_print.html", context)
+    # return render_to_pdf(html_string)
+    pdf, file_paths = render_to_pdf(context)
+    file = pdf.output(dest='S').encode('latin-1')
+    delete_images(file_paths)
+    response = HttpResponse(file, content_type='application/pdf')
+    content_disposition = 'inline; filename=f"{glam.name_pt} - {timestamp}.pdf"'
+    response['Content-Disposition'] = content_disposition
+    return response
 
 
 def get_views_for_year_until_month(glam, timestamp):
