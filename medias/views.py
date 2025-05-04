@@ -57,6 +57,14 @@ def update_glam_mediafiles(request, pk):
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
+def update_all_glams_from_start(request, start):
+    glams = Glam.objects.all()
+    for glam in glams:
+        asyncio.run(update_glam_async(glam.pk, start=start, end=None))
+        print(f"{glam.name_pt} was updated at {datetime.now()}")
+    return redirect(reverse("glams:glam_list"))
+
+
 @permission_required('medias.add_mediarequests')
 def update_glam_mediafiles_requests(request, pk, start=None, end=None):
     asyncio.run(update_glam_async(pk, start, end))
