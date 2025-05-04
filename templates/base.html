@@ -31,7 +31,12 @@
             {% endblock %}
             {% block content %}{% endblock %}
         </main>
-        <footer>{% block footer %}{% trans "This app was developed by Wikimedia Brasil." %}{% endblock %}</footer>
+        <footer>
+            {% block footer %}
+                <p>{% trans "This app was developed by Wikimedia Brasil." %}</p>
+                <p>{% blocktrans %}Code available at <a target="_blank" href="https://github.com/wikimediabrasil/glamwikibrasil" title="GitHub link">GitHub</a>. {% endblocktrans%}</p>
+            {% endblock %}
+        </footer>
     </div>
     {% block scripts %}{% endblock %}
 </div>

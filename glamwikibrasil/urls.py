@@ -20,6 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('oauth/', include('social_django.urls', namespace='social')),
     path('', include('glams.urls'), name='glams'),
     path('', include('medias.urls'), name='medias'),
+    path('', include('users.urls'), name='users'),
 ]

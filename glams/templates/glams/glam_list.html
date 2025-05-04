@@ -9,22 +9,22 @@
 {% block breadcrumbs %}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'glams:index' %}">{% trans "Home" %}</a></li>
-        <li class="breadcrumb-item active"><a href="{% url 'glams:glam_list' %}">{% trans "GLAM-Wiki partnerships" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "GLAM-Wiki partnerships" %}</li>
     </ol>
 {% endblock %}
 {% block content %}
     <h1>{% trans "GLAM-Wiki partnerships" %}</h1>
     <input type="text" id="search-input" onkeyup="searchFunction()" placeholder="{% trans 'Search for GLAM-Wiki partnerships..' %}" title="{% trans 'Type in an GLAM-Wiki partnership name' %}">
     <div class="flex-container" id="glams">
-        <a href="{% url 'glams:glam_create'%}" aria-label="{% trans 'Create a new GLAM-Wiki partnership' %}" class="flex-item" style="justify-content: center; text-align: center"><h2>{% trans 'Create a new GLAM-Wiki partnership' %}</h2></a>
+        {% if perms.glams.add_glam %}<a href="{% url 'glams:glam_create'%}" aria-label="{% trans 'Create a new GLAM-Wiki partnership' %}" class="flex-item" style="justify-content: center; text-align: center"><h2>{% trans 'Create a new GLAM-Wiki partnership' %}</h2></a>{% endif %}
         {% for item in items|dictsort:"name_pt" %}
             <div class="flex-item" data-name="{{ item.name_pt }}" style="justify-content: space-between; ">
                 <div style="display: flex; flex-direction: column; ">
                     <h2><a href="{% url 'glams:glam_detail' pk=item.wikidata %}" aria-label="{% trans 'Details of the GLAM-Wiki partnership' %}">{{ item.name_pt }}</a></h2>
                     <span><small>{{ item.acronym }}</small></span>
                     <span>{{ item.wikidata }}</span>
-                    <span><a href="{{ item.website_url }}" title="{% trans 'Website URL of this GLAM-Wiki partnership' %}">{% trans "Wiki homepage" %}</a></span>
-                    <span><a href="{{ item.category_url }}" title="{% trans 'Wikimedia Commons category URL of this GLAM-Wiki partnership' %}">{% trans "Wikimedia Commons category" %}</a></span>
+                    <span><a target="_blank" href="{{ item.website_url }}" title="{% trans 'Website URL of this GLAM-Wiki partnership' %}">{% trans "Wiki homepage" %}</a></span>
+                    <span><a target="_blank" href="{{ item.category_url }}" title="{% trans 'Wikimedia Commons category URL of this GLAM-Wiki partnership' %}">{% trans "Wikimedia Commons category" %}</a></span>
                     <span>{{ item.start_date }}{% if item.end_date %} - {{ item.end_date }}{% endif %}</span>
                     <ul>
                         {% for institution in item.institutions.all %}
@@ -33,8 +33,8 @@
                     </ul>
                 </div>
                 <div style="display: flex; flex-direction: row; justify-content: space-between">
-                    <a href="{% url 'glams:glam_update' pk=item.wikidata %}"><button class="custom-button">{% trans "Update" %}</button></a>
-                    <a class="red-link" href="{% url 'glams:glam_delete' pk=item.wikidata %}"><button class="custom-red-button">{% trans "Delete" %}</button></a>
+                    {% if perms.glams.change_glams %}<a href="{% url 'glams:glam_update' pk=item.wikidata %}"><button class="custom-button">{% trans "Update" %}</button></a>{% endif %}
+                    {% if perms.glams.delete_glams %}<a class="red-link" href="{% url 'glams:glam_delete' pk=item.wikidata %}"><button class="custom-red-button">{% trans "Delete" %}</button></a>{% endif %}
                 </div>
             </div>
         {% endfor %}

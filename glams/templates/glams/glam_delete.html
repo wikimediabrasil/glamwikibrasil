@@ -33,9 +33,9 @@
             <p class="field_title">{% trans "Wikidata item" %}</p>
             <p class="field_value">{{ item.wikidata }}</p>
             <p class="field_title">{% trans "URL address for the main page" %}</p>
-            <p class="field_value"><a href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url }}</a></p>
+            <p class="field_value"><a target="_blank" href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url }}</a></p>
             <p class="field_title">{% trans "Wikimedia Commons general category URL address" %}</p>
-            <p class="field_value"><a href="{{ item.category_url }}" title="{% trans 'Website for the Commons category' %}">{{ item.category_url }}</a></p>
+            <p class="field_value"><a target="_blank" href="{{ item.category_url }}" title="{% trans 'Website for the Commons category' %}">{{ item.category_url }}</a></p>
             <p class="field_title">{% trans "Date of the start of this GLAM-Wiki partnership" %}</p>
             <p class="field_value">{{ item.start_date }}</p>
             <p class="field_title">{% trans "Date of the end of this GLAM-Wiki partnership, if applicable" %}</p>

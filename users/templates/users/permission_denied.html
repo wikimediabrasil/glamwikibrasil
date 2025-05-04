@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Permission denied" %}{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url "glams:index" %}">{% trans "Home" %}</a></li>
+    </ol>
+{% endblock %}
+{% block banner %}{% endblock %}
+{% block content %}
+    <div class="w3-row">
+        <div class="w3-third">&nbsp;</div>
+        <div class="w3-third">
+            <h1 style="text-align: center">{% trans "Access denied!" %}</h1>
+            <div style="padding-bottom: 5em; text-align: center; "><img src="{% static 'images/denied.svg' %}" alt="{% trans "Access denied icon" %}" width="200px"></div>
+            <p style="font-size:1.5em; font-weight: bold; text-align: center; ">{% trans "Sorry, but the page you are trying to reach is only available for logged and authorized users. Log in with your Wikimedia account to access it." %}</p>
+            <div class="button-vertical-container" style="margin-top: 1em;">
+                <a href="{% url 'social:begin' 'mediawiki' %}" aria-label="{% trans 'Login' %}"><button class="custom-button">{% trans "Login" %}</button></a>
+                <a href="{% url 'glams:index' %}" aria-label="{% trans 'Home' %}"><button class="custom-button">{% trans "Home" %}</button></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

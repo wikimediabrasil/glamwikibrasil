@@ -46,10 +46,10 @@
             {% for glam_name, glam_data in chart_data.items %}
                 <tr>
                     <td data-name="Name"><a href="{% url 'glams:glam_detail' pk=glam_data.glam.wikidata %}" title="{% blocktrans with name=glam_name %}Details of {{ name }}{% endblocktrans %}">{{ glam_name }}</a></td>
-                    <td data-name="Views">{{ glam_data.total }}</td>
-                    <td data-name="Files">{{ glam_data.files }}</td>
-                    <td data-name="Usage">{{ glam_data.usage }}</td>
-                    <td data-name="Wikis">{{ glam_data.wiki }}</td>
+                    <td data-name="Views" data-order="{{ glam_data.total|delocalize }}">{{ glam_data.total }}</td>
+                    <td data-name="Files" data-order="{{ glam_data.files|delocalize }}">{{ glam_data.files }}</td>
+                    <td data-name="Usage" data-order="{{ glam_data.usage|delocalize }}">{{ glam_data.usage }}</td>
+                    <td data-name="Wikis" data-order="{{ glam_data.wiki|delocalize }}">{{ glam_data.wiki }}</td>
                 </tr>
             {% endfor %}
             </tbody>

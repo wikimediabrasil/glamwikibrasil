@@ -12,6 +12,7 @@ def divide(a, b):
     except (ValueError, ZeroDivisionError, TypeError):
         return 0
 
+
 @register.filter
 def percent_divide(a, b):
     try:
@@ -25,8 +26,13 @@ def percent_divide(a, b):
 def timestamp2date(timestamp):
     return datetime.strptime(timestamp, "%Y%m%d00")
 
+
 @register.filter
 def wiki_page(url):
     page_title = urllib.parse.unquote(urllib.parse.urlparse(url).path.replace('/wiki/', ''))
     formatted_title = page_title.replace('_', ' ')
     return formatted_title
+
+@register.filter
+def delocalize(number):
+    return str(number).replace(".","")

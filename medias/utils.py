@@ -466,6 +466,7 @@ def render_to_pdf(context):
 
     title_phrase = context["glam"].name_pt
     date_phrase = formats.date_format(context["timestamp"], "F/Y", use_l10n=True)
+    pdf.set_title(f"{title_phrase} - {context['timestamp']}")
 
     add_text(pdf, (255, 255, 255), 160, 10, 2, title_phrase, "C", "M-BLACK", 24, 30, 33, multi_cel=True)
     add_text(pdf, (255, 255, 255), 160, 8.5, 2, date_phrase, "C", "M-BLACK", 20, 30)

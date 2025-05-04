@@ -22,17 +22,12 @@
         <p class="field_title">{% trans "Wikidata item" %}</p>
         <p class="field_value">{{ item.wikidata }}</p>
         <p class="field_title">{% trans "URL address" %}</p>
-        <p class="field_value"><a href="{{ item.website_url }}"
-                                  title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
+        <p class="field_value"><a target="_blank" href="{{ item.website_url }}" title="{% trans 'Website for the institution' %}">{{ item.website_url }}</a></p>
         <p class="field_title">{% trans "Location" %}</p>
         <p class="field_value">{{ item.get_location_display }}</p>
     </div>
-    <div class="flex-center button-container">
-        <a href="{% url 'glams:institution_update' pk=item.wikidata %}">
-            <button class="custom-button">{% trans "Update institution" %}</button>
-        </a>
-        <a href="{% url 'glams:institution_delete' pk=item.wikidata %}">
-            <button class="custom-red-button">{% trans "Delete institution" %}</button>
-        </a>
+    <div class="w3-container flex-center button-container">
+        {% if perms.glams.change_institution %}<a href="{% url 'glams:institution_update' pk=item.wikidata %}"><button class="custom-button">{% trans "Update" %}</button></a>{% endif %}
+        {% if perms.glams.delete_institution %}<a href="{% url 'glams:institution_delete' pk=item.wikidata %}"><button class="custom-red-button">{% trans "Delete" %}</button></a>{% endif %}
     </div>
 {% endblock %}

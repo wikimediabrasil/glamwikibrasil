@@ -37,10 +37,19 @@
     <div class="nav_section nav_bottom">
         <div class="nav_separator"></div>
         <div class="nav_subsection">
-            <a href="{% url 'medias:top_files' %}" aria-label="{% trans 'Top files' %}">
-                <i class="nav_icon fa-solid fa-award"></i>
-                <span class="nav_title">{% trans "Top files" %}</span>
-            </a>
+            {% if user.is_authenticated %}
+                <span class="navbar_title">{{user.username}}</span>
+                <div class="nav_separator"></div>
+                <a href="{% url 'users:logout' %}" aria-label="{% trans 'Logout' %}">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="nav_title">{% trans "Logout" %}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'social:begin' 'mediawiki' %}" aria-label="{% trans 'Login' %}">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span class="nav_title">{% trans "Login" %}</span>
+                </a>
+            {% endif %}
         </div>
     </div>
 </nav>

@@ -8,6 +8,10 @@ from urllib.parse import urlencode
 # ==================================================================================================================== #
 # LOGIN
 # ==================================================================================================================== #
+def permission_denied(request):
+    return render(request, "users/permission_denied.html", status=403)
+
+
 def login_oauth(request):
     next_url = request.GET.get("next", "/")
     login_url = reverse("users:social:begin", kwargs={"backend": "mediawiki"})

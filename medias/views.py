@@ -3,7 +3,7 @@ import aiohttp
 import asyncio
 from math import floor
 from asgiref.sync import sync_to_async
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, reverse
 from django.db.models import Count, Sum
@@ -11,10 +11,12 @@ from more_itertools import chunked
 from .utils import *
 
 
+
 # ======================================================================================================================
 # UPDATE DATABASE
 # ======================================================================================================================
 def all_glams_report(request):
+    user = request.user
     glams = Glam.objects.all()
     glam_requests = {}
     for glam in glams:
@@ -26,18 +28,19 @@ def all_glams_report(request):
         glam_requests[glam.name_pt] = {"glam": glam, "total": total_requests, "files": total_files, "usage": total_usage_page, "wiki": total_usage_wiki}
 
     sorted_glam_requests = dict(sorted(glam_requests.items(), key=lambda item: item[1]["total"], reverse=True))
-    context = {"chart_data": sorted_glam_requests}
+    context = {"chart_data": sorted_glam_requests, "user": user}
 
     return render(request, 'glams/all_glams.html', context)
 
 
 def top_files_report(request):
+    user = request.user
     most_viewed = MediaRequests.objects.all().values("file",
                                                      "file__filename",
                                                      "file__glam__name_pt",
                                                      "file__glam__wikidata").annotate(total_requests=Sum("requests")).order_by("-total_requests")[:100]
 
-    context = {"dataset": most_viewed}
+    context = {"dataset": most_viewed, "user": user}
 
     return render(request, 'glams/top_files.html', context)
 
@@ -123,9 +126,6 @@ def return_report_for_month(request, pk, timestamp):
         "request_data": list(_requests.order_by("timestamp").values("timestamp").annotate(total=Sum("requests"))),
         "n_days": _n_days
     }
-    # return render(request, "medias/report.html", context)
-    # html_string = render_to_string("medias/report_print.html", context)
-    # return render_to_pdf(html_string)
     pdf, file_paths = render_to_pdf(context)
     file = pdf.output(dest='S').encode('latin-1')
     delete_images(file_paths)
@@ -169,3 +169,10 @@ def extract_numbers_from_db(pk, timestamp):
 
     return glam, total_media_files, total_views, average_views, average_views_year, most_viewed, usage_articles, usage_wikis, usage, media_requests_objects_historical, n_days
 
+
+def get_index_counter_data(request):
+    return JsonResponse({
+        "total_requests": MediaRequests.objects.aggregate(total=Sum("requests"))["total"] or 0,
+        "total_files": MediaFile.objects.count() or 0,
+        "total_glams": Glam.objects.count() or 0
+    })

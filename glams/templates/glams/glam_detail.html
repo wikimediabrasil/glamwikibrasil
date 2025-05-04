@@ -24,11 +24,11 @@
         <div class="w3-half">
             <div class="w3-half">
                 <p class="field_title"><i class="fa-solid fa-barcode"></i> {% trans "Wikidata item" %}</p>
-                <p class="field_value"><a href="https://www.wikidata.org/wiki/{{ item.wikidata }}" title="{% trans 'Wikidata item' %}">{{ item.wikidata }}</a></p>
+                <p class="field_value"><a target="_blank" href="https://www.wikidata.org/wiki/{{ item.wikidata }}" title="{% trans 'Wikidata item' %}">{{ item.wikidata }}</a></p>
                 <p class="field_title"><i class="fa-brands fa-wikipedia-w"></i> {% trans "URL address" %}</p>
-                <p class="field_value"><a href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url|wiki_page }}</a></p>
+                <p class="field_value"><a target="_blank" href="{{ item.website_url }}" title="{% trans 'Website for the GLAM-Wiki partnership' %}">{{ item.website_url|wiki_page }}</a></p>
                 <p class="field_title"><i class="fa-solid fa-building-columns"></i> {% trans "Institutions" %}</p>
-                <p class="field_value">{% for institution in item.institutions.all %}{{ institution }}<br>{% endfor %}</p>
+                <p class="field_value">{% for institution in item.institutions.all %}<div><a target="_blank" href="{{ institution.website_url }}" title="{{ institution.name_pt }} website">{{ institution }}</a></div>{% endfor %}</p>
             </div>
             <div class="w3-half">
                 <p class="field_title"><i class="fa-solid fa-image"></i> {% trans "Number of files" %}</p>
@@ -40,19 +40,17 @@
             </div>
         </div>
     </div>
+    {% if perms.glams.change_glams or perms.glams.delete_glams %}
     <div class="w3-row">
         <div class="w3-quarter">&nbsp;</div>
         <div class="w3-half">
             <div class="button-container">
-                <a href="{% url 'glams:glam_update' pk=item.wikidata %}">
-                    <button class="custom-button">{% trans "Update" %}</button>
-                </a>
-                <a href="{% url 'glams:glam_delete' pk=item.wikidata %}">
-                    <button class="custom-red-button">{% trans "Delete" %}</button>
-                </a>
+                {% if perms.glams.change_glams %}<a href="{% url 'glams:glam_update' pk=item.wikidata %}"><button class="custom-button">{% trans "Update" %}</button></a>{% endif %}
+                {% if perms.glams.delete_glams %}<a href="{% url 'glams:glam_delete' pk=item.wikidata %}"><button class="custom-red-button">{% trans "Delete" %}</button></a>{% endif %}
             </div>
         </div>
     </div>
+    {% endif %}
     <div class="w3-row">
         <div class="w3-quarter">&nbsp;</div>
         <div class="w3-half">

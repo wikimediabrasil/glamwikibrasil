@@ -43,7 +43,7 @@
             <tbody>
             {% for media_request in dataset %}
                 <tr>
-                    <td data-name="Name"><a href="https://commons.wikimedia.org/wiki/File:{{ media_request.file__filename }}" title="{% blocktrans with name=glam_name %}{{ media_request.file__filename }} at Wikimedia Commons{% endblocktrans %}">{{ media_request.file__filename }}</a></td>
+                    <td data-name="Name"><a target="_blank" href="https://commons.wikimedia.org/wiki/File:{{ media_request.file__filename }}" title="{% blocktrans with name=glam_name %}{{ media_request.file__filename }} at Wikimedia Commons{% endblocktrans %}">{{ media_request.file__filename }}</a></td>
                     <td data-name="Views">{{ media_request.total_requests }}</td>
                     <td data-name="GLAM"><a href="{% url 'glams:glam_detail' pk=media_request.file__glam__wikidata %}" title="{% blocktrans with fname=media_request.file__filename %}GLAM-Wiki partnership for {{ fname }}{% endblocktrans %}">{{ media_request.file__glam__name_pt }}</a></td>
                 </tr>
