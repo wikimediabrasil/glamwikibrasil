@@ -57,10 +57,10 @@ def update_glam_mediafiles(request, pk):
     return redirect(reverse("glams:glam_detail", kwargs={"pk": pk}))
 
 
-def update_all_glams_from_start(request, start):
+def update_all_glams_from_start(request, start, end):
     glams = Glam.objects.all()
     for glam in glams:
-        asyncio.run(update_glam_async(glam.pk, start=start, end=None))
+        asyncio.run(update_glam_async(glam.pk, start=start, end=end))
         print(f"{glam.name_pt} was updated at {datetime.now()}")
     return redirect(reverse("glams:glam_list"))
 

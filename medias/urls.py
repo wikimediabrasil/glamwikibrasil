@@ -14,5 +14,5 @@ urlpatterns = [
     path('glams/<str:pk>/requests', views.update_glam_mediafiles_requests, name='glam_requests_all'),
     path('glams/<str:pk>/usage', views.update_glam_mediafiles_usage, name='glam_usage'),
     path('api/index-data', views.get_index_counter_data, name="index-data"),
-    path('update_all/<str:start>', views.update_all_glams_from_start, name="update_all"),
+    path('update_all/<str:start>/<str:end>', views.update_all_glams_from_start, name="update_all"),
 ]
