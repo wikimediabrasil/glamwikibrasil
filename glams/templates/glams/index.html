@@ -26,8 +26,10 @@
             <div class="w3-third">&nbsp;</div>
             <div class="w3-third">
                 <div class="button-vertical-container" style="margin-top: 1em;">
-                    <a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}"><button class="custom-button">{% trans "Institutions" %}</button></a>
+                    {% if user.is_authenticated %}<a href="{% url 'glams:institution_list' %}" aria-label="{% trans 'Institutions' %}"><button class="custom-button">{% trans "Institutions" %}</button></a>{% endif %}
                     <a href="{% url 'glams:glam_list' %}" aria-label="{% trans 'GLAM-Wiki Partnerships' %}"><button class="custom-button">{% trans "GLAMs" %}</button></a>
+                    <a href="{% url 'medias:all_glams' %}" aria-label="{% trans 'General report' %}"><button class="custom-button">{% trans "General report" %}</button></a>
+                    <a href="{% url 'medias:top_files' %}" aria-label="{% trans 'Top files' %}"><button class="custom-button">{% trans "Top files" %}</button></a>
                 </div>
             </div>
         </div>
