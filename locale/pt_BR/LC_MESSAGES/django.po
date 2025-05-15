@@ -676,7 +676,7 @@ msgstr "Core Rest API"
 
 #: .\medias\utils.py:250 .\medias\utils.py:251
 msgid "Contact: "
-msgstr "Cotnato: "
+msgstr "Contato: "
 
 #: .\medias\utils.py:253
 msgid "cultura@wmnobrasil.org"
