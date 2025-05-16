@@ -72,6 +72,8 @@ button:not(.circle_button), .button { flex: 1; padding: 0.5em 1em; border-radius
     .button-container { flex-direction: column; gap: 1em; }
     .breadcrumb-item + .breadcrumb-item::before { content: ""; margin: 0; }
     .table-container { padding: 1em !important;}
+    .flex-container { flex-direction: column !important; }
+    .flex-item { width: 100% !important; }
 }
 
 /* CAROUSEL */
