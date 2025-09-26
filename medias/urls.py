@@ -9,6 +9,7 @@ urlpatterns = [
     path('glams/<str:pk>/medias', views.update_glam_mediafiles, name='glam_medias'),
     path('all_glams', views.all_glams_report, name='all_glams'),
     path('top_files', views.top_files_report, name='top_files'),
+    path('top_files/<str:pk>', views.top_files_of_glam_report, name='top_files_of_glam'),
     path('glams/<str:pk>/requests/<str:start>/<str:end>', views.update_glam_mediafiles_requests, name='glam_requests_specific'),
     path('glams/<str:pk>/requests/<str:start>', views.update_glam_mediafiles_requests, name='glam_requests_since'),
     path('glams/<str:pk>/requests', views.update_glam_mediafiles_requests, name='glam_requests_all'),

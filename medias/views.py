@@ -45,6 +45,30 @@ def top_files_report(request):
 
     return render(request, 'glams/top_files.html', context)
 
+def top_files_of_glam_report(request, pk):
+    user = request.user
+    most_viewed = MediaRequests.objects.filter(file__glam_id=pk).values("file",
+                                                                        "file__filename",
+                                                                        "file__glam__name_pt",
+                                                                        "file__glam__wikidata").annotate(total_requests=Sum("requests")).order_by("-total_requests")[:100]
+
+    context = {"dataset": most_viewed, "user": user}
+
+    return render(request, 'glams/top_files.html', context)
+
+def database_status(request):
+    user = request.user
+    glams = Glam.objects.all()
+    glam_requests = {}
+    for glam in glams:
+        total_requests = MediaRequests.objects.filter(file__glam=glam).aggregate(total=Sum("requests"))["total"] or 0
+        total_files = MediaFile.objects.filter(glam=glam).count()
+        usage = MediaUsage.objects.filter(file__glam=glam, namespace=0)
+        total_usage_page = usage.values_list("page_id", flat=True).distinct().count()
+        total_usage_wiki = usage.values_list("wiki", flat=True).distinct().count()
+        glam_requests[glam.name_pt] = {"glam": glam, "total": total_requests, "files": total_files, "usage": total_usage_page, "wiki": total_usage_wiki}
+
+
 # ======================================================================================================================
 # UPDATE DATABASE
 # ======================================================================================================================
@@ -59,7 +83,16 @@ def update_glam_mediafiles(request, pk):
 
 def update_all_glams_from_start(request, start, end):
     glams = Glam.objects.all()
+    glams_dict = {}
     for glam in glams:
+        total_files = MediaFile.objects.filter(glam=glam).count()
+        glams_dict[glam.wikidata] = {"glam": glam, "files": total_files}
+
+    sorted_glams = dict(sorted(glams_dict.items(), key=lambda item: item[1]["files"], reverse=False))
+
+    for glam_id, glam__item in sorted_glams.items():
+        glam = glam__item["glam"]
+        print(f"Updating {glam.name_pt} ({glam.wikidata}) at {datetime.now()}")
         asyncio.run(update_glam_async(glam.pk, start=start, end=end))
         print(f"{glam.name_pt} was updated at {datetime.now()}")
     return redirect(reverse("glams:glam_list"))
@@ -74,6 +107,7 @@ def update_glam_mediafiles_requests(request, pk, start=None, end=None):
 async def update_glam_async(pk, start, end):
     glam = await sync_to_async(Glam.objects.get)(pk=pk)
     medias = await sync_to_async(list)(MediaFile.objects.filter(glam=glam))
+    n = int(len(medias)/1000)
 
     if not start:
         start = "2015010100"
@@ -88,7 +122,7 @@ async def update_glam_async(pk, start, end):
             responses = await asyncio.gather(*tasks)
             all_data = list(zip(media_batch, responses))
             await sync_to_async(create_media_request)(all_data)
-            print(i)
+            print(i, n)
             i=i+1
 
 
