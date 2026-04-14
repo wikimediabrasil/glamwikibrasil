@@ -19,34 +19,19 @@ class MediaFile(models.Model):
 
 
 class MediaRequests(models.Model):
-    REFERER_CHOICES = [
-        ("all-referers", _("All referers")),
-        ("internal", _("Internal")),
-        ("external", _("External")),
-        ("search-engine", _("Search-engine")),
-        ("unknown", _("Unknown")),
-        ("none", _("None")),
-    ]
-    AGENT_CHOICES = [
-        ("all-agents", _("All agents")),
-        ("user", _("Users")),
-        ("spider", _("Spiders")),
-    ]
-    GRANULARITY_CHOICES = [
-        ("daily", _("Daily")),
-        ("monthly", _("Monthly")),
-    ]
-
+    """
+    referer is always "all-referers"
+    agent is always "users"
+    granularity is always "monthly"
+    """
     file = models.ForeignKey(MediaFile, on_delete=models.CASCADE)
-    referer = models.CharField(max_length=50, choices=REFERER_CHOICES)
-    agent = models.CharField(max_length=50, choices=AGENT_CHOICES)
-    granularity = models.CharField(max_length=50, choices=GRANULARITY_CHOICES)
     timestamp = models.CharField(max_length=10)
     requests = models.PositiveIntegerField(default=0)
     retrieved_at = models.DateTimeField(auto_now_add=True)
+    timestamp_new = models.DateField(null=True)
 
     class Meta:
-        unique_together = ("file", "timestamp", "referer", "agent", "granularity")
+        unique_together = ("file", "timestamp")
 
     def formatted_timestamp(self):
         if len(self.timestamp) == 10:
