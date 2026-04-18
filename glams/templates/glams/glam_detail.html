@@ -59,7 +59,7 @@
                 <label for="generate_report">{% trans "Generate report for specific month:" %}</label>
                 <select id="generate_report" name="timestamp" style="width: 100%">
                     {% for timestamp in timestamp_options %}
-                        <option value="{{ timestamp }}">{{ timestamp|timestamp2date|date:"F Y" }}</option>
+                        <option value="{{ timestamp|date:'Ym01' }}">{{ timestamp|date:"F Y" }}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" class="button custom-button submit-button" value="{% trans 'Generate report' %}">

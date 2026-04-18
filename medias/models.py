@@ -25,22 +25,15 @@ class MediaRequests(models.Model):
     granularity is always "monthly"
     """
     file = models.ForeignKey(MediaFile, on_delete=models.CASCADE)
-    timestamp = models.CharField(max_length=10)
     requests = models.PositiveIntegerField(default=0)
     retrieved_at = models.DateTimeField(auto_now_add=True)
-    timestamp_new = models.DateField(null=True)
+    timestamp = models.DateField()
 
     class Meta:
         unique_together = ("file", "timestamp")
 
-    def formatted_timestamp(self):
-        if len(self.timestamp) == 10:
-            return f"{self.timestamp[:4]}-{self.timestamp[4:6]}-{self.timestamp[6:8]}"
-        else:
-            return self.timestamp
-
     def __str__(self):
-        return f"{str(self.file)} ({self.formatted_timestamp()})"
+        return f"{str(self.file)} ({self.timestamp})"
 
 
 class MediaUsage(models.Model):

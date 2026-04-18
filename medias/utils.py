@@ -1,3 +1,4 @@
+import asyncio
 import re
 import os
 import numpy as np
@@ -69,6 +70,7 @@ def clean_license(content):
 
 
 COMMONS_API_URL = "https://commons.wikimedia.org/w/api.php"
+HEADERS = { "User-Agent": "GLAMWikiBrasil/1.0 (https://glamwikibrasil.toolforge.org; tecnologia@wmnobrasil.org)" }
 
 
 def get_category_members(category):
@@ -88,7 +90,7 @@ def get_category_members(category):
     all_results = {}
 
     while True:
-        response = requests.get(COMMONS_API_URL, params=params)
+        response = requests.get(COMMONS_API_URL, params=params, headers=HEADERS)
         data = response.json()
 
         if "query" in data and "pages" in data["query"]:
@@ -115,7 +117,7 @@ def get_usage(filenames):
     all_results = {}
 
     while True:
-        response = requests.get(COMMONS_API_URL, params=params)
+        response = requests.get(COMMONS_API_URL, params=params, headers=HEADERS)
         data = response.json()
 
         if "query" in data and "pages" in data["query"]:
@@ -138,7 +140,7 @@ def get_requests(file, start, end, referer="all-referers", agent="user", granula
 
     url = f"https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/{referer}/{agent}/{file.file_path.replace('/','%2F')}/{granularity}/{start}/{end}"
 
-    response = requests.get(url)
+    response = requests.get(url, headers=HEADERS)
     data = response.json()
 
     if "items" in data:
@@ -149,9 +151,20 @@ def get_requests(file, start, end, referer="all-referers", agent="user", granula
 
 async def get_requests_async(session, file_path, start, end, referer="all-referers", agent="user", granularity="monthly"):
     url = f"https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/{referer}/{agent}/{file_path.replace('/','%2F')}/{granularity}/{start}/{end}"
-    async with session.get(url) as response:
-        data = await response.json()
-        return data.get("items", [])
+    for attempt in range(2):
+        async with session.get(url, headers=HEADERS) as response:
+            if response.status == 429:
+                wait = 2 ** attempt
+                await asyncio.sleep(wait)
+                continue
+            if response.status != 200:
+                return []
+            try:
+                data = await response.json(content_type=None)
+                return data.get("items", [])
+            except Exception:
+                return []
+    return []
 
 
 def create_mediafile_instances(glam_id, dataset):
@@ -206,19 +219,44 @@ def create_mediausage_instances(data):
 
 def create_media_request(media_data_list):
     new_instances = []
+
     for file, data in media_data_list:
-        incoming_items = { (item["referer"], item["granularity"], item["timestamp"], item["agent"]): item for item in data }
+        if not data:
+            continue
 
-        existing_keys = set(MediaRequests.objects.filter(file=file).filter(
-            Q(*[Q(referer=ref, granularity=gran, timestamp=ts, agent=ag) for (ref, gran, ts, ag) in incoming_items.keys()],
-              _connector=Q.OR)).values_list("referer", "granularity", "timestamp", "agent"))
+        incoming = {}
+        for item in data:
+            try:
+                ts_date = datetime.strptime(item["timestamp"][:8], "%Y%m%d").date()
+                incoming[ts_date] = item["requests"]
+            except (ValueError, KeyError):
+                continue
 
-        new_instances.extend([MediaRequests(file=file, referer=ref, granularity=gran, timestamp=ts, agent=ag,
-                                            requests=incoming_items[(ref, gran, ts, ag)]["requests"]) for
-                              (ref, gran, ts, ag) in incoming_items.keys() if (ref, gran, ts, ag) not in existing_keys])
+        if not incoming:
+            continue
+
+        existing_timestamps = set(
+            MediaRequests.objects.filter(
+                file=file,
+                timestamp__in=list(incoming.keys()),
+            ).values_list("timestamp", flat=True)
+        )
+
+        for ts_date, requests_count in incoming.items():
+            if ts_date not in existing_timestamps:
+                new_instances.append(MediaRequests(
+                    file=file,
+                    timestamp=ts_date,
+                    requests=requests_count,
+                ))
 
     if new_instances:
-        MediaRequests.objects.bulk_create(new_instances, batch_size=1000)
+        MediaRequests.objects.bulk_create(
+            new_instances,
+            batch_size=1000,
+            ignore_conflicts=True,
+        )
+
 
 class PDF(FPDF):
     def __init__(self, glam, *args, **kwargs):
@@ -322,7 +360,7 @@ def insert_image(pdf, thumb, filename, y, files):
             else:
                 url = f"https://commons.wikimedia.org/w/thumb.php?f={filename}&w=200"
 
-            response = requests.get(url)
+            response = requests.get(url, headers=HEADERS)
 
             with open(local_file_path, "wb") as f:
                 f.write(response.content)
