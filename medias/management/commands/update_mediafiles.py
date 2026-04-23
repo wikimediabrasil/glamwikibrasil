@@ -15,7 +15,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         pk = options["pk"]
-        glams = [Glam.objects.get(pk=pk)] if pk else list(Glam.objects.order_by("name_pt"))
 
         if pk:
             try:
