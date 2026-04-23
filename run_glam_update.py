@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 import sys
-import json
 import os
+import json
 import datetime
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "glamwikibrasil.settings")  # adjust if needed
+# Setup Django
+sys.path.insert(0, '/data/project/glamwikibrasil/www/python/src')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "glamwikibrasil.settings")
 
 import django
 django.setup()
 
 from django.core.management import call_command
 
-CHECKPOINT_FILE = os.path.expanduser("~/logs/checkpoint.json")
+CHECKPOINT_FILE = '/data/project/glamwikibrasil/logs/checkpoint.json'
 
 
 def load_checkpoint():
@@ -22,6 +24,7 @@ def load_checkpoint():
 
 
 def save_checkpoint(data):
+    os.makedirs(os.path.dirname(CHECKPOINT_FILE), exist_ok=True)
     with open(CHECKPOINT_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
@@ -35,68 +38,61 @@ def mark_done(checkpoint, pk, step):
     save_checkpoint(checkpoint)
 
 
-def run(pk, log_path):
-    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+def log(msg):
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{ts}] {msg}", flush=True)
 
+
+def run(pk):
     checkpoint = load_checkpoint()
     glam_data = checkpoint.get(pk, {})
 
-    with open(log_path, "a", buffering=1) as log:
-        def out(msg):
-            ts = datetime.datetime.now().strftime("%H:%M:%S")
-            line = f"[{ts}] {msg}\n"
-            log.write(line)
-            log.flush()
+    log(f"=== Starting update for {pk} ===")
 
-        out(f"=== Starting update for {pk} ===")
+    # Step 1: mediafiles
+    if not glam_data.get("files_done"):
+        log("Step 1: mediafiles")
+        try:
+            call_command("update_mediafiles", pk)
+            mark_done(checkpoint, pk, "files_done")
+            log("Step 1: done")
+        except Exception as e:
+            log(f"Step 1 FAILED: {e}")
+            sys.exit(1)
+    else:
+        log("Step 1: mediafiles already done, skipping")
 
-        # Step 1: mediafiles
-        if not glam_data.get("files_done"):
-            out("Step 1: mediafiles")
-            try:
-                call_command("update_mediafiles", pk, stdout=log, stderr=log)
-                mark_done(checkpoint, pk, "files_done")
-                out("Step 1: done")
-            except Exception as e:
-                out(f"Step 1 FAILED: {e}")
-                sys.exit(1)
-        else:
-            out("Step 1: mediafiles already done, skipping")
+    # Step 2: mediausage
+    if not glam_data.get("usage_done"):
+        log("Step 2: mediausage")
+        try:
+            call_command("update_mediausage", pk)
+            mark_done(checkpoint, pk, "usage_done")
+            log("Step 2: done")
+        except Exception as e:
+            log(f"Step 2 FAILED: {e}")
+            sys.exit(1)
+    else:
+        log("Step 2: mediausage already done, skipping")
 
-        # Step 2: mediausage
-        if not glam_data.get("usage_done"):
-            out("Step 2: mediausage")
-            try:
-                call_command("update_mediausage", pk, stdout=log, stderr=log)
-                mark_done(checkpoint, pk, "usage_done")
-                out("Step 2: done")
-            except Exception as e:
-                out(f"Step 2 FAILED: {e}")
-                sys.exit(1)
-        else:
-            out("Step 2: mediausage already done, skipping")
+    # Step 3: mediarequests
+    if not glam_data.get("requests_done"):
+        log("Step 3: mediarequests")
+        try:
+            call_command("update_mediarequests", pk)
+            mark_done(checkpoint, pk, "requests_done")
+            log("Step 3: done")
+        except Exception as e:
+            log(f"Step 3 FAILED: {e}")
+            sys.exit(1)
+    else:
+        log("Step 3: mediarequests already done, skipping")
 
-        # Step 3: mediarequests
-        if not glam_data.get("requests_done"):
-            out("Step 3: mediarequests")
-            try:
-                call_command("update_mediarequests", pk, stdout=log, stderr=log)
-                mark_done(checkpoint, pk, "requests_done")
-                out("Step 3: done")
-            except Exception as e:
-                out(f"Step 3 FAILED: {e}")
-                sys.exit(1)
-        else:
-            out("Step 3: mediarequests already done, skipping")
-
-        out(f"=== Finished {pk} ===")
+    log(f"=== Finished {pk} ===")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python run_glam_update.py <pk> <log_path>")
+    if len(sys.argv) != 2:
+        print("Usage: run_glam_update.py <pk>")
         sys.exit(1)
-
-    pk = sys.argv[1]
-    log_path = sys.argv[2]
-    run(pk, log_path)
+    run(sys.argv[1])
