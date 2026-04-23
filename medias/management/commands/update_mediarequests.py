@@ -5,10 +5,10 @@ from time import perf_counter
 import aiohttp
 from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand, CommandError
-from django.db import close_old_connections
+from django.db import close_old_connections, connection
 
 from glams.models import Glam
-from medias.models import MediaFile
+from medias.models import MediaFile, MediaRequests
 from medias.views import get_media_batch, get_existing_file_ids_for_month
 from medias.utils import get_requests_async, create_media_request
 
@@ -34,11 +34,17 @@ class Command(BaseCommand):
         self.stdout.write(f"GLAM: {glam.name_pt}")
 
         t0 = perf_counter()
-        asyncio.run(self.run_async(glam.pk, start, end))
+        inserted = asyncio.run(self.run_async(glam.pk, start, end))
         elapsed = perf_counter() - t0
 
+        # Reconnect after long async operation
+        connection.close()
+
+        total_requests = MediaRequests.objects.filter(file__glam=glam).count()
         self.stdout.write(self.style.SUCCESS(
-            f"\nDone in {elapsed:.1f}s ({elapsed/60:.1f} min)"
+            f"Done in {elapsed:.1f}s ({elapsed/60:.1f} min) | "
+            f"+{inserted} new records | "
+            f"{total_requests} total records in DB"
         ))
 
     async def run_async(self, pk, start, end):
@@ -58,42 +64,41 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Already processed: {len(existing_ids)}")
 
+        remaining = await sync_to_async(
+            lambda: MediaFile.objects.filter(glam=glam).exclude(page_id__in=existing_ids).count()
+        )()
+        self.stdout.write(f"To process: {remaining}\n")
+
+        if remaining == 0:
+            self.stdout.write(self.style.SUCCESS("Already up to date!"))
+            return 0
+
         CONCURRENCY = 5
         CHUNK_SIZE = 100
         semaphore = asyncio.Semaphore(CONCURRENCY)
 
-        headers = {
-            "User-Agent": "GLAMWikiBrasil/1.0 (toolforge)"
-        }
-
+        headers = {"User-Agent": "GLAMWikiBrasil/1.0 (https://glamwikibrasil.toolforge.org; tecnologia@wmnobrasil.org)"}
         timeout = aiohttp.ClientTimeout(total=60)
         connector = aiohttp.TCPConnector(limit=CONCURRENCY)
 
         async def fetch_with_retry(session, media, retries=3):
             for attempt in range(retries):
                 try:
+                    await asyncio.sleep(0.3)  # outside semaphore so slot isn't held while sleeping
                     async with semaphore:
-                        await asyncio.sleep(0.3)
-                        return await get_requests_async(
-                            session, media.file_path, start, end
-                        )
-                except Exception as e:
+                        return (media, await get_requests_async(session, media.file_path, start, end))
+                except Exception:
                     if attempt == retries - 1:
-                        return e
+                        return (media, [])
                     await asyncio.sleep(2 ** attempt)
 
         offset = 0
         total_inserted = 0
         batch_counter = 0
 
-        async with aiohttp.ClientSession(
-            connector=connector,
-            timeout=timeout,
-            headers=headers
-        ) as session:
-
+        async with aiohttp.ClientSession(connector=connector, timeout=timeout, headers=headers) as session:
             while True:
-                # 🔑 refresh DB connection periodically
+                # Refresh DB connection every 5 batches
                 if batch_counter % 5 == 0:
                     await sync_to_async(close_old_connections, thread_sensitive=True)()
 
@@ -104,50 +109,33 @@ class Command(BaseCommand):
                 if not media_batch:
                     break
 
-                self.stdout.write(
-                    f"Batch offset={offset} size={len(media_batch)}"
-                )
-
-                tasks = [
-                    fetch_with_retry(session, media)
-                    for media in media_batch
-                ]
-
+                tasks = [fetch_with_retry(session, media) for media in media_batch]
                 results = await asyncio.gather(*tasks)
 
-                valid = []
-                errors = 0
-
-                for media, result in zip(media_batch, results):
-                    if isinstance(result, Exception):
-                        errors += 1
-                    else:
-                        valid.append((media, result))
+                errors = sum(1 for _, data in results if not data)
+                valid = [(media, data) for media, data in results if data]
 
                 if errors:
-                    self.stdout.write(
-                        self.style.WARNING(f"{errors} failed requests (will retry next run)")
-                    )
+                    self.stdout.write(self.style.WARNING(
+                        f"Batch offset={offset}: {errors} failed requests"
+                    ))
 
                 if valid:
-                    await sync_to_async(
-                        create_media_request,
-                        thread_sensitive=True
-                    )(valid)
-
-                    total_inserted += len(valid)
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Inserted {len(valid)} (total {total_inserted})"
-                        )
-                    )
+                    before = await sync_to_async(
+                        lambda: MediaRequests.objects.filter(file__glam=glam).count()
+                    )()
+                    await sync_to_async(create_media_request, thread_sensitive=True)(valid)
+                    after = await sync_to_async(
+                        lambda: MediaRequests.objects.filter(file__glam=glam).count()
+                    )()
+                    inserted = after - before
+                    total_inserted += inserted
+                    self.stdout.write(self.style.SUCCESS(
+                        f"Batch offset={offset}: +{inserted} records (total {total_inserted})"
+                    ))
 
                 offset += CHUNK_SIZE
                 batch_counter += 1
-
-                # 🔑 small pause between batches (very important)
                 await asyncio.sleep(1)
 
-        self.stdout.write(
-            self.style.SUCCESS(f"\nFinished. Total inserted: {total_inserted}")
-        )
+        return total_inserted

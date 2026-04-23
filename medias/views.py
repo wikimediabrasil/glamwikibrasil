@@ -239,7 +239,7 @@ def extract_numbers_from_db(pk, timestamp):
     usage = MediaUsage.objects.filter(file__glam=glam, namespace="0")
     total_views_for_the_year_until_now, n_months = get_views_for_year_until_month(glam, timestamp)
 
-    date_timestamp = datetime.strptime(timestamp, "%Y%m%d%H") + relativedelta(months=1)
+    date_timestamp = datetime.strptime(timestamp, "%Y%m%d") + relativedelta(months=1)
     total_media_files = MediaFile.objects.filter(glam=glam, upload_date__lte=date_timestamp).count()
     total_views = sum(media_requests)
     average_views = floor(total_views / n_days)
